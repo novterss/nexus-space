@@ -17,8 +17,8 @@
   <!-- Title & Info -->
   <text x="40" y="32" font-size="18" font-weight="bold" fill="#1e3a8a">ER Diagram: ระบบจองห้องประชุมและ Co-working Space (CSC362)</text>
   <text x="40" y="52" font-size="12" fill="#64748b">ความสัมพันธ์ระดับฐานข้อมูล Relational Database (1:M / Many-to-Many via Junction Table)</text>
-  <text x="880" y="32" font-size="12" font-weight="bold" fill="#334155">นักศึกษา: 6800401 ณพัชรกัณฑ์ พัชญ์ชัยพงศา</text>
-  <text x="880" y="50" font-size="12" fill="#64748b">วิชา: CSC362-64 sec02</text>
+  <text x="730" y="32" font-size="12" font-weight="bold" fill="#334155">นักศึกษา: 6800401 ณพัชรกัณฑ์ พัชญ์ชัยพงศา (Naphatcharakan Phatchaiphongsa)</text>
+  <text x="730" y="50" font-size="12" fill="#64748b">วิชา: CSC362-64 sec02</text>
 
   <!-- Grid Dots Background -->
   <g opacity="0.3">
@@ -97,15 +97,15 @@
     <text x="12" y="220" font-size="12" font-weight="bold" fill="#0f172a">TOTAL_PRICE</text>
   </g>
 
-  <!-- 4. TABLE: EQUIPMENT -->
   <g filter="url(#shadow)" transform="translate(40, 440)">
-    <rect width="230" height="145" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
+    <rect width="230" height="170" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
     <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
     <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">EQUIPMENT</text>
     <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 EQUIPMENT_CODE</text>
     <text x="12" y="72" font-size="12" fill="#334155">EQUIPMENT_NAME</text>
     <text x="12" y="96" font-size="12" fill="#334155">QTY</text>
     <text x="12" y="120" font-size="12" fill="#334155">STATUS</text>
+    <text x="12" y="144" font-size="12" fill="#334155">PRICE</text>
   </g>
 
   <!-- 5. TABLE: BOOKING_EQUIPMENT (JUNCTION TABLE) -->
