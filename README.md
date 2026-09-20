@@ -197,7 +197,7 @@ graph TB
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/nexus-space.git
+git clone https://github.com/novterss/nexus-space.git
 
 # Open in browser (no server needed!)
 # เปิดในเบราว์เซอร์ (ไม่ต้องลง server!)
