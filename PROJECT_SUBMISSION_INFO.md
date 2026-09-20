@@ -30,7 +30,7 @@
 | รายการ | ลิงก์ / ข้อมูล |
 |---|---|
 | **GitHub Repository** | `https://github.com/Novterss/nexus-space` |
-| **Live Web App (Vercel)** | `https://nexus-space.vercel.app` *(หรือ URL ที่ได้หลัง deploy)* |
+| **Live Web App (Vercel)** | `https://nexus-space-six.vercel.app` |
 | **DBMS / Tool** | PostgreSQL 16+ / DBeaver / Google Apps Script |
 | **คู่มือและสคริปต์** | ดูรายละเอียดในไฟล์ `STUDY_GUIDE_QA.md` และ `GITHUB_SETUP_AND_DEPLOY.md` |
 

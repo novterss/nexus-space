@@ -19,7 +19,7 @@
 
 <br>
 
-[🌐 Live Demo](https://nexus-space.vercel.app) · [📄 Documentation](#-documentation) · [🗂️ Database Schema](#-database-schema)
+[🌐 Live Demo](https://nexus-space-six.vercel.app) · [📄 Documentation](#-documentation) · [🗂️ Database Schema](#-database-schema)
 
 </div>
 
