@@ -51,7 +51,7 @@
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-👉 **[🌐 ทดลองใช้งานระบบจริง (Live Demo)](https://nexus-space.vercel.app)** · **[📂 ดู Source Code บน GitHub](https://github.com/Novterss/nexus-space)**
+👉 **[🌐 ทดลองใช้งานระบบจริง (Live Demo)](https://nexus-space-six.vercel.app)** · **[📂 ดู Source Code บน GitHub](https://github.com/Novterss/nexus-space)**
 
 </td>
 </tr>
