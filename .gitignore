@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Vercel
+.vercel/
+
+# Logs
+*.log
+
+# Gemini / Antigravity
+.gemini/
+.agents/
+
+# Artifacts
+*.md.metadata.json

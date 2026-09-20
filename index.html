@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจองห้องประชุมและ Co-working Space | CSC362 Project</title>
+  
+  <!-- Google Fonts: Inter & Prompt สำหรับภาษาไทยและภาษาอังกฤษที่ทันสมัย -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --bg-card-hover: rgba(51, 65, 85, 0.8);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --warning: #f59e0b;
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --radius: 16px;
+      --transition: all 0.25s ease-in-out;
+    }
+
+    [data-theme="light"] {
+      --bg-main: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-hover: rgba(255, 255, 255, 1);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Prompt', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%);
+      background-attachment: fixed;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Header & Navigation */
+    header {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 0.25rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .badge-sub {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: var(--primary);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--text-main) 60%, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* Filters Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: var(--radius);
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pill:hover, .pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Room Cards Grid */
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .room-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .room-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(59, 130, 246, 0.4);
+      box-shadow: var(--glass-shadow);
+    }
+
+    .room-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .room-name-wrapper h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .room-type-tag {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: inline-block;
+    }
+
+    /* Status Badge (Green / Red) */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-badge.available {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge.available::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-green 2s infinite;
+    }
+
+    .status-badge.occupied {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-badge.occupied::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--danger);
+      border-radius: 50%;
+    }
+
+    @keyframes pulse-green {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .room-specs {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+      padding: 0.75rem;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    .spec-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .spec-item i {
+      color: var(--primary);
+    }
+
+    .room-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      margin-top: auto;
+    }
+
+    .room-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .room-price span {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .btn-book {
+      padding: 0.6rem 1.2rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .btn-book:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-book:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #475569;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Equipment Add-on Checklist */
+    .equipment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+
+    .equipment-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.9rem;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .equipment-item:hover {
+      border-color: var(--primary);
+    }
+
+    .eq-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .eq-price {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Live Price Box */
+    .price-calculation-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .calc-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .calc-total .amount {
+      color: var(--primary);
+    }
+
+    /* Tables */
+    .data-table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .data-table th {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+
+    .pill-status {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .pill-paid {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .pill-pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+
+    /* Admin Action Button */
+    .btn-action {
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-action:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Alert / Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #1e293b;
+      color: white;
+      border: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 200;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-tabs {
+        overflow-x: auto;
+        width: 100%;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Top Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand" onclick="switchTab('rooms')">
+        <div class="brand-icon">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <div>
+          <div>NEXUS SPACE</div>
+          <div style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">CSC362 Database Project</div>
+        </div>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <div class="nav-tabs">
+        <button class="nav-btn active" id="tab-btn-rooms" onclick="switchTab('rooms')">
+          <i class="fa-solid fa-door-open"></i> รายการห้อง
+        </button>
+        <button class="nav-btn" id="tab-btn-history" onclick="switchTab('history')">
+          <i class="fa-solid fa-clock-rotate-left"></i> ประวัติการจอง
+        </button>
+        <button class="nav-btn" id="tab-btn-admin" onclick="switchTab('admin')">
+          <i class="fa-solid fa-shield-halved"></i> Admin Panel
+        </button>
+        <button class="nav-btn" id="tab-btn-schema" onclick="switchTab('schema')">
+          <i class="fa-solid fa-database"></i> ฐานข้อมูล 6 ตาราง
+        </button>
+      </div>
+
+      <!-- Theme Mode Toggle -->
+      <button class="theme-toggle" onclick="toggleTheme()" title="เปลี่ยนโหมดสี">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- SECTION 1: ROOM SHOWCASE -->
+    <section id="section-rooms">
+      <div class="hero">
+        <div class="badge-sub">
+          <i class="fa-solid fa-circle-check"></i> ระบบจองห้องประชุมและ Co-working Space อัจฉริยะ
+        </div>
+        <h1>เลือกพื้นที่ทำงานและห้องประชุมของคุณ</h1>
+        <p>อัปเดตสถานะห้องว่างแบบเรียลไทม์ พร้อมอุปกรณ์เสริมครบครัน คิดราคาอัตโนมัติตามระยะเวลาจริง</p>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="filter-bar">
+        <div class="filter-pills" id="room-type-filters">
+          <button class="pill active" onclick="filterRooms('all', this)">ทั้งหมด</button>
+          <button class="pill" onclick="filterRooms('Creative Pod', this)">Creative Pod</button>
+          <button class="pill" onclick="filterRooms('Meeting Room', this)">Meeting Room</button>
+          <button class="pill" onclick="filterRooms('Boardroom', this)">Boardroom</button>
+          <button class="pill" onclick="filterRooms('Event Hall', this)">Event Hall</button>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">สถานะ:</span>
+          <button class="pill" id="filter-avail-btn" onclick="toggleAvailableOnly(this)">
+            🟢 เฉพาะห้องว่าง
+          </button>
+        </div>
+      </div>
+
+      <!-- Rooms Grid -->
+      <div class="rooms-grid" id="rooms-container">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- SECTION 2: MEMBER BOOKING HISTORY -->
+    <section id="section-history" style="display: none;">
+      <div class="hero">
+        <h1>ตรวจสอบประวัติการจองห้อง</h1>
+        <p>กรอกเบอร์โทรศัพท์หรือรหัสสมาชิกเพื่อค้นหารายการจองและสถานะการชำระเงิน</p>
+      </div>
+
+      <div style="max-width: 500px; margin: 0 auto 2rem auto;">
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="member-search-input" class="form-control" placeholder="เบอร์โทร (เช่น 0812345678) หรือรหัสสมาชิก">
+          <button class="btn-book" onclick="searchMemberHistory()">
+            <i class="fa-solid fa-magnifying-glass"></i> ค้นหา
+          </button>
+        </div>
+      </div>
+
+      <div id="member-history-result">
+        <!-- Search Results Table -->
+      </div>
+    </section>
+
+    <!-- SECTION 3: ADMIN CONTROL PANEL -->
+    <section id="section-admin" style="display: none;">
+      <div class="hero">
+        <div class="badge-sub">Admin Control Dashboard</div>
+        <h1>จัดการรายการจองและสถานะการชำระเงิน</h1>
+        <p>ตรวจสอบธุรกรรมทั้งหมด อัปเดตสถานะชำระเงิน และตรวจสอบข้อมูลผู้ใช้งาน</p>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="room-card" style="padding: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">รายการจองทั้งหมด</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--primary);" id="admin-kpi-bookings">3 รายการ</div>
+        </div>
+        <div class="room-card" style="padding: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">รายได้รวมโดยประมาณ</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--success);" id="admin-kpi-revenue">฿3,010</div>
+        </div>
+        <div class="room-card" style="padding: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">ห้องที่เปิดให้บริการ</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--accent);">5 ห้อง</div>
+        </div>
+        <div class="room-card" style="padding: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">อุปกรณ์เสริมทั้งหมด</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--warning);">15 ชิ้น</div>
+        </div>
+      </div>
+
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>รหัสการจอง</th>
+              <th>สมาชิก (ผู้จอง)</th>
+              <th>ห้อง</th>
+              <th>วันที่ & เวลา</th>
+              <th>ยอดเงินรวม</th>
+              <th>ช่องทางชำระ</th>
+              <th>สถานะชำระ</th>
+              <th>การจัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="admin-bookings-tbody">
+            <!-- Rendered by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 4: DATABASE SCHEMA INSPECTOR (CSC362 REQUIREMENT) -->
+    <section id="section-schema" style="display: none;">
+      <div class="hero">
+        <div class="badge-sub">CSC362 Database Schema Architecture</div>
+        <h1>โครงสร้างฐานข้อมูล 6 ตาราง (PostgreSQL / Relational Model)</h1>
+        <p>ออกแบบตามหลัก Normalization พร้อมระบุ Primary Key, Foreign Key และความสัมพันธ์</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+        <!-- Table 1: MEMBER -->
+        <div class="room-card">
+          <h3 style="color: var(--primary);"><i class="fa-solid fa-users"></i> MEMBER (ข้อมูลสมาชิก)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: 1 : M กับ BOOKING</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 MEMBER_CODE (PK)</b> - รหัสสมาชิก</li>
+            <li>FNAME, LNAME - ชื่อและนามสกุล</li>
+            <li>PHONE, EMAIL - เบอร์โทรศัพท์และอีเมล (Unique)</li>
+            <li>MEMBER_TYPE - General, VIP, Student</li>
+            <li>REGISTER_DATE - วันที่สมัครสมาชิก</li>
+          </ul>
+        </div>
+
+        <!-- Table 2: ROOM -->
+        <div class="room-card">
+          <h3 style="color: var(--primary);"><i class="fa-solid fa-door-closed"></i> ROOM (ห้องประชุม)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: 1 : M กับ BOOKING</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 ROOM_CODE (PK)</b> - รหัสห้อง (เช่น R101)</li>
+            <li>ROOM_NAME - ชื่อห้อง</li>
+            <li>ROOM_TYPE - Creative Pod, Meeting, Boardroom</li>
+            <li>CAPACITY - ความจุคน</li>
+            <li>PRICE_PER_HOUR - ราคาต่อชั่วโมง</li>
+            <li>STATUS - Available (เขียว) / Occupied (แดง)</li>
+            <li>FLOOR - ชั้นที่ตั้ง</li>
+          </ul>
+        </div>
+
+        <!-- Table 3: EQUIPMENT -->
+        <div class="room-card">
+          <h3 style="color: var(--primary);"><i class="fa-solid fa-plug"></i> EQUIPMENT (อุปกรณ์เสริม)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: 1 : M กับ BOOKING_EQUIPMENT</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 EQUIPMENT_CODE (PK)</b> - รหัสอุปกรณ์</li>
+            <li>EQUIPMENT_NAME - ชื่ออุปกรณ์เสริม</li>
+            <li>QTY - จำนวนคงเหลือในสต๊อก</li>
+            <li>STATUS - Available, Out of Stock</li>
+          </ul>
+        </div>
+
+        <!-- Table 4: BOOKING -->
+        <div class="room-card">
+          <h3 style="color: var(--primary);"><i class="fa-solid fa-calendar-check"></i> BOOKING (การจองห้อง)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: เชื่อมกับ MEMBER, ROOM, PAYMENT</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 BOOKING_CODE (PK)</b> - รหัสการจอง</li>
+            <li><span style="color: var(--accent);">MEMBER_CODE (FK)</span> - อ้างอิง MEMBER</li>
+            <li><span style="color: var(--accent);">ROOM_CODE (FK)</span> - อ้างอิง ROOM</li>
+            <li>BOOKING_DATE, START_TIME, END_TIME - ช่วงเวลาใช้งาน</li>
+            <li>STATUS - Confirmed, Pending, Cancelled</li>
+            <li>TOTAL_PRICE - ราคารวมสุทธิ</li>
+          </ul>
+        </div>
+
+        <!-- Table 5: BOOKING_EQUIPMENT -->
+        <div class="room-card" style="border: 2px solid var(--accent);">
+          <h3 style="color: var(--accent);"><i class="fa-solid fa-link"></i> BOOKING_EQUIPMENT (ตารางเชื่อม)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">🌟 Junction Table แก้ไข Many-to-Many (M:M)</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 BOOKING_CODE (Composite PK, FK)</b></li>
+            <li><b style="color: #f59e0b;">🔑 EQUIPMENT_CODE (Composite PK, FK)</b></li>
+            <li>QTY_USED - จำนวนชิ้นที่ยืมใช้ในการจองนี้</li>
+          </ul>
+        </div>
+
+        <!-- Table 6: PAYMENT -->
+        <div class="room-card">
+          <h3 style="color: var(--primary);"><i class="fa-solid fa-credit-card"></i> PAYMENT (การชำระเงิน)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: M : 1 กับ BOOKING</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 PAYMENT_CODE (PK)</b> - รหัสชำระเงิน</li>
+            <li><span style="color: var(--accent);">BOOKING_CODE (FK)</span> - อ้างอิง BOOKING</li>
+            <li>PAYMENT_DATE - วันและเวลาที่จ่าย</li>
+            <li>AMOUNT - ยอดชำระ</li>
+            <li>METHOD - PromptPay, Credit Card, Cash</li>
+            <li>STATUS - Paid, Pending, Refunded</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Booking Modal Form -->
+  <div class="modal-overlay" id="booking-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 700;" id="modal-room-title">จองห้องประชุม</h2>
+          <div style="font-size: 0.85rem; color: var(--text-muted);" id="modal-room-subtitle">กำลังดำเนินการจองห้อง</div>
+        </div>
+        <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+      </div>
+
+      <form id="booking-form" onsubmit="handleBookingSubmit(event)">
+        <!-- Hidden Room Code -->
+        <input type="hidden" id="book-room-code">
+        <input type="hidden" id="book-price-per-hour">
+
+        <!-- Date & Times -->
+        <div class="form-group">
+          <label class="form-label"><i class="fa-regular fa-calendar"></i> วันที่ต้องการเข้าใช้</label>
+          <input type="date" id="book-date" class="form-control" required onchange="calculateLivePrice()">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><i class="fa-regular fa-clock"></i> เวลาเริ่มต้น</label>
+            <select id="book-start-time" class="form-control" required onchange="calculateLivePrice()">
+              <option value="09:00">09:00 น.</option>
+              <option value="10:00">10:00 น.</option>
+              <option value="11:00">11:00 น.</option>
+              <option value="13:00">13:00 น.</option>
+              <option value="14:00">14:00 น.</option>
+              <option value="15:00">15:00 น.</option>
+              <option value="16:00">16:00 น.</option>
+              <option value="17:00">17:00 น.</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-clock"></i> เวลาสิ้นสุด</label>
+            <select id="book-end-time" class="form-control" required onchange="calculateLivePrice()">
+              <option value="10:00">10:00 น.</option>
+              <option value="11:00">11:00 น.</option>
+              <option value="12:00" selected>12:00 น.</option>
+              <option value="14:00">14:00 น.</option>
+              <option value="15:00">15:00 น.</option>
+              <option value="16:00">16:00 น.</option>
+              <option value="17:00">17:00 น.</option>
+              <option value="18:00">18:00 น.</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Add-on Equipments (M:M Relationship) -->
+        <div class="form-group">
+          <label class="form-label"><i class="fa-solid fa-sliders"></i> เลือกอุปกรณ์เสริมเพิ่มเติม (ตาราง BOOKING_EQUIPMENT)</label>
+          <div class="equipment-list" id="equipment-checklist">
+            <!-- Rendered by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Member / Guest Information -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">ชื่อผู้จอง</label>
+            <input type="text" id="book-fname" class="form-control" placeholder="เช่น ณพัชรกัณฑ์" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">นามสกุล</label>
+            <input type="text" id="book-lname" class="form-control" placeholder="เช่น พัชญ์ชัยพงศา" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">เบอร์โทรศัพท์ติดต่อ</label>
+            <input type="tel" id="book-phone" class="form-control" placeholder="08XXXXXXXX" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ช่องทางชำระเงิน</label>
+            <select id="book-payment-method" class="form-control">
+              <option value="PromptPay">พร้อมเพย์ (PromptPay QR)</option>
+              <option value="Credit Card">บัตรเครดิต / เดบิต</option>
+              <option value="Bank Transfer">โอนผ่านบัญชีธนาคาร</option>
+              <option value="Cash">ชำระเงินสดที่เคาน์เตอร์</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Real-time Live Price Calculation Box -->
+        <div class="price-calculation-box">
+          <div class="calc-row">
+            <span>ค่าห้องประชุม (<span id="calc-hours">3</span> ชั่วโมง)</span>
+            <span id="calc-room-cost">฿750</span>
+          </div>
+          <div class="calc-row">
+            <span>ค่าอุปกรณ์เสริมที่เลือก</span>
+            <span id="calc-eq-cost">฿0</span>
+          </div>
+          <div class="calc-total">
+            <span>ยอดรวมสุทธิ (TOTAL_PRICE):</span>
+            <span class="amount" id="calc-grand-total">฿750</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-book" style="width: 100%; justify-content: center; font-size: 1rem; padding: 0.75rem;">
+          <i class="fa-solid fa-check-circle"></i> ยืนยันการจองห้องและชำระเงิน
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.25rem;"></i>
+    <span id="toast-msg">ดำเนินการสำเร็จ</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>รายวิชา <b>CSC362-64 sec02 Database Systems</b> | อาจารย์ผู้สอน: <b>อ.สุมนา เกษมสวัสดิ์</b></div>
+    <div style="margin-top: 0.35rem;">พัฒนาโดย <b>6800401 นายณพัชรกัณฑ์ พัชญ์ชัยพงศา</b> | PostgreSQL Relational Database System</div>
+  </footer>
+
+  <!-- Core JavaScript Logic (Dual-Mode: Apps Script / Local Browser Preview) -->
+  <script>
+    // State Store
+    let currentRooms = [];
+    let currentEquipments = [];
+    let currentBookings = [];
+    let selectedRoom = null;
+
+    // ตรวจสอบว่ารันบน Google Apps Script หรือเบราว์เซอร์ปกติ
+    const isAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
+
+    // Seed Data ตัวอย่างเริ่มต้นสำหรับพรีวิว
+    const MOCK_ROOMS = [
+      { roomCode: 'R101', roomName: 'Focus Pod A', roomType: 'Creative Pod', capacity: 2, pricePerHour: 120, status: 'Available', floor: 1 },
+      { roomCode: 'R102', roomName: 'Focus Pod B', roomType: 'Creative Pod', capacity: 2, pricePerHour: 120, status: 'Occupied', floor: 1 },
+      { roomCode: 'R201', roomName: 'Brainstorm Studio', roomType: 'Meeting Room', capacity: 6, pricePerHour: 250, status: 'Available', floor: 2 },
+      { roomCode: 'R301', roomName: 'Executive Boardroom', roomType: 'Boardroom', capacity: 14, pricePerHour: 500, status: 'Occupied', floor: 3 },
+      { roomCode: 'R401', grand: true, roomName: 'Grand Innovation Hall', roomType: 'Event Hall', capacity: 40, pricePerHour: 1200, status: 'Available', floor: 4 }
+    ];
+
+    const MOCK_EQUIPMENTS = [
+      { equipmentCode: 'EQ01', equipmentName: '4K Laser Projector + จอโปรเจคเตอร์', price: 150 },
+      { equipmentCode: 'EQ02', equipmentName: 'Smart Interactive Whiteboard', price: 100 },
+      { equipmentCode: 'EQ03', equipmentName: 'ชุดไมโครโฟนไร้สายและระบบเสียงประชุม', price: 120 },
+      { equipmentCode: 'EQ04', equipmentName: 'กล้อง 360 องศาสำหรับ Hybrid Meeting', price: 80 }
+    ];
+
+    const MOCK_ADMIN_BOOKINGS = [
+      { bookingCode: 'BK20260901', memberInfo: 'ณพัชรกัณฑ์ พัชญ์ชัยพงศา (0812345678)', roomName: 'Brainstorm Studio', bookingDate: '2026-09-21', startTime: '09:00', endTime: '12:00', status: 'Confirmed', totalPrice: 950, paymentStatus: 'Paid', paymentMethod: 'PromptPay' },
+      { bookingCode: 'BK20260902', memberInfo: 'สมชาย ใจดี (0899998888)', roomName: 'Focus Pod B', bookingDate: '2026-09-21', startTime: '10:00', endTime: '12:00', status: 'Confirmed', totalPrice: 240, paymentStatus: 'Paid', paymentMethod: 'Credit Card' },
+      { bookingCode: 'BK20260903', memberInfo: 'กานต์ ธีรภาพ (0823334444)', roomName: 'Executive Boardroom', bookingDate: '2026-09-21', startTime: '13:00', endTime: '16:00', status: 'Confirmed', totalPrice: 1820, paymentStatus: 'Pending', paymentMethod: 'PromptPay' }
+    ];
+
+    // เริ่มต้นระบบเมื่อเปิดหน้าเว็บ
+    window.addEventListener('DOMContentLoaded', () => {
+      // ตั้งค่าวันที่เริ่มต้นเป็นวันพรุ่งนี้
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('book-date').value = tomorrow.toISOString().split('T')[0];
+
+      loadInitialData();
+    });
+
+    function loadInitialData() {
+      if (isAppsScript) {
+        google.script.run
+          .withSuccessHandler(rooms => {
+            currentRooms = rooms;
+            renderRooms(currentRooms);
+          })
+          .getRooms();
+
+        google.script.run
+          .withSuccessHandler(eqs => {
+            currentEquipments = eqs;
+            renderEquipmentChecklist(currentEquipments);
+          })
+          .getEquipments();
+
+        google.script.run
+          .withSuccessHandler(bookings => {
+            currentBookings = bookings;
+            renderAdminBookings(currentBookings);
+          })
+          .getAllBookingsAdmin();
+      } else {
+        // ทำงานในโหมด Local Preview
+        currentRooms = MOCK_ROOMS;
+        currentEquipments = MOCK_EQUIPMENTS;
+        currentBookings = MOCK_ADMIN_BOOKINGS;
+        renderRooms(currentRooms);
+        renderEquipmentChecklist(currentEquipments);
+        renderAdminBookings(currentBookings);
+      }
+    }
+
+    // ฟังก์ชัน Render การ์ดห้องประชุม
+    function renderRooms(rooms) {
+      const container = document.getElementById('rooms-container');
+      container.innerHTML = '';
+
+      rooms.forEach(room => {
+        const isAvailable = room.status === 'Available';
+        const card = document.createElement('div');
+        card.className = 'room-card';
+        card.setAttribute('data-type', room.roomType);
+        card.setAttribute('data-status', room.status);
+
+        card.innerHTML = `
+          <div>
+            <div class="room-top">
+              <div class="room-name-wrapper">
+                <h3>${room.roomName}</h3>
+                <span class="room-type-tag">${room.roomType} &bull; ชั้น ${room.floor}</span>
+              </div>
+              <span class="status-badge ${isAvailable ? 'available' : 'occupied'}">
+                ${isAvailable ? 'ว่าง - พร้อมจอง' : 'ไม่ว่าง / กำลังใช้งาน'}
+              </span>
+            </div>
+
+            <div class="room-specs">
+              <div class="spec-item"><i class="fa-solid fa-users"></i> รองรับ ${room.capacity} คน</div>
+              <div class="spec-item"><i class="fa-solid fa-building"></i> รหัส: ${room.roomCode}</div>
+              <div class="spec-item"><i class="fa-solid fa-wifi"></i> High-speed Wi-Fi</div>
+            </div>
+          </div>
+
+          <div class="room-footer">
+            <div class="room-price">
+              ฿${room.pricePerHour.toLocaleString()} <span>/ ชม.</span>
+            </div>
+            <button class="btn-book" ${!isAvailable ? 'disabled' : ''} onclick="openBookingModal('${room.roomCode}')">
+              <i class="fa-solid fa-calendar-plus"></i> ${isAvailable ? 'จองห้องนี้' : 'ห้องไม่ว่าง'}
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ฟังก์ชัน Render อุปกรณ์เสริมในฟอร์มจอง
+    function renderEquipmentChecklist(equipments) {
+      const container = document.getElementById('equipment-checklist');
+      container.innerHTML = '';
+
+      equipments.forEach(eq => {
+        const item = document.createElement('label');
+        item.className = 'equipment-item';
+        item.innerHTML = `
+          <div class="eq-info">
+            <input type="checkbox" class="eq-checkbox" value="${eq.equipmentCode}" data-price="${eq.price}" onchange="calculateLivePrice()">
+            <span>${eq.equipmentName}</span>
+          </div>
+          <span class="eq-price">+฿${eq.price}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // สลับแท็บหน้าจอ
+    function switchTab(tab) {
+      ['rooms', 'history', 'admin', 'schema'].forEach(t => {
+        document.getElementById(`section-${t}`).style.display = (t === tab) ? 'block' : 'none';
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) {
+          if (t === tab) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // กรองประเภทห้อง
+    function filterRooms(type, btn) {
+      document.querySelectorAll('#room-type-filters .pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.room-card');
+      cards.forEach(c => {
+        const rType = c.getAttribute('data-type');
+        if (type === 'all' || rType === type) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    let onlyAvailable = false;
+    function toggleAvailableOnly(btn) {
+      onlyAvailable = !onlyAvailable;
+      btn.classList.toggle('active', onlyAvailable);
+
+      const cards = document.querySelectorAll('.room-card');
+      cards.forEach(c => {
+        const isAvail = c.getAttribute('data-status') === 'Available';
+        if (onlyAvailable && !isAvail) {
+          c.style.display = 'none';
+        } else {
+          c.style.display = 'flex';
+        }
+      });
+    }
+
+    // เปิด Modal การจอง
+    function openBookingModal(roomCode) {
+      selectedRoom = currentRooms.find(r => r.roomCode === roomCode);
+      if (!selectedRoom) return;
+
+      document.getElementById('book-room-code').value = selectedRoom.roomCode;
+      document.getElementById('book-price-per-hour').value = selectedRoom.pricePerHour;
+      document.getElementById('modal-room-title').innerText = `จองห้อง: ${selectedRoom.roomName}`;
+      document.getElementById('modal-room-subtitle').innerText = `ประเภท: ${selectedRoom.roomType} | ความจุ: ${selectedRoom.capacity} คน | ฿${selectedRoom.pricePerHour}/ชม.`;
+
+      // รีเซ็ตการเลือกอุปกรณ์
+      document.querySelectorAll('.eq-checkbox').forEach(cb => cb.checked = false);
+
+      calculateLivePrice();
+      document.getElementById('booking-modal').classList.add('active');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('booking-modal').classList.remove('active');
+    }
+
+    // คำนวณราคาแบบเรียลไทม์
+    function calculateLivePrice() {
+      const pricePerHour = Number(document.getElementById('book-price-per-hour').value || 0);
+      const startTime = document.getElementById('book-start-time').value;
+      const endTime = document.getElementById('book-end-time').value;
+
+      const startHour = parseInt(startTime.split(':')[0], 10);
+      const endHour = parseInt(endTime.split(':')[0], 10);
+      let hours = endHour - startHour;
+      if (hours <= 0) hours = 1; // กันคำนวณติดลบ
+
+      const roomCost = hours * pricePerHour;
+
+      // คำนวณค่าอุปกรณ์
+      let eqCost = 0;
+      document.querySelectorAll('.eq-checkbox:checked').forEach(cb => {
+        eqCost += Number(cb.getAttribute('data-price') || 0);
+      });
+
+      const grandTotal = roomCost + eqCost;
+
+      document.getElementById('calc-hours').innerText = hours;
+      document.getElementById('calc-room-cost').innerText = `฿${roomCost.toLocaleString()}`;
+      document.getElementById('calc-eq-cost').innerText = `฿${eqCost.toLocaleString()}`;
+      document.getElementById('calc-grand-total').innerText = `฿${grandTotal.toLocaleString()}`;
+
+      return { hours, roomCost, eqCost, grandTotal };
+    }
+
+    // บันทึกการจอง
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      const calc = calculateLivePrice();
+
+      const selectedEqs = [];
+      document.querySelectorAll('.eq-checkbox:checked').forEach(cb => {
+        selectedEqs.push({
+          equipmentCode: cb.value,
+          qtyUsed: 1
+        });
+      });
+
+      const bookingPayload = {
+        roomCode: document.getElementById('book-room-code').value,
+        bookingDate: document.getElementById('book-date').value,
+        startTime: document.getElementById('book-start-time').value,
+        endTime: document.getElementById('book-end-time').value,
+        fname: document.getElementById('book-fname').value,
+        lname: document.getElementById('book-lname').value,
+        phone: document.getElementById('book-phone').value,
+        paymentMethod: document.getElementById('book-payment-method').value,
+        totalPrice: calc.grandTotal,
+        equipments: selectedEqs
+      };
+
+      if (isAppsScript) {
+        google.script.run
+          .withSuccessHandler(res => {
+            if (res.success) {
+              showToast(`จองสำเร็จ! รหัสการจอง: ${res.bookingCode}`);
+              closeBookingModal();
+              loadInitialData();
+            } else {
+              alert(res.message);
+            }
+          })
+          .submitBooking(bookingPayload);
+      } else {
+        // จำลองใน Local Preview
+        const mockCode = 'BK' + Math.floor(100000 + Math.random() * 900000);
+        currentBookings.unshift({
+          bookingCode: mockCode,
+          memberInfo: `${bookingPayload.fname} ${bookingPayload.lname} (${bookingPayload.phone})`,
+          roomName: selectedRoom.roomName,
+          bookingDate: bookingPayload.bookingDate,
+          startTime: bookingPayload.startTime,
+          endTime: bookingPayload.endTime,
+          status: 'Confirmed',
+          totalPrice: bookingPayload.totalPrice,
+          paymentStatus: 'Paid',
+          paymentMethod: bookingPayload.paymentMethod
+        });
+        renderAdminBookings(currentBookings);
+        showToast(`จองห้องสำเร็จ! รหัสการจอง: ${mockCode}`);
+        closeBookingModal();
+      }
+    }
+
+    // ค้นหาประวัติการจองของสมาชิก
+    function searchMemberHistory() {
+      const q = document.getElementById('member-search-input').value.trim();
+      if (!q) {
+        alert('กรุณากรอกเบอร์โทรศัพท์หรือรหัสสมาชิก');
+        return;
+      }
+
+      if (isAppsScript) {
+        google.script.run
+          .withSuccessHandler(res => {
+            renderMemberResults(res.bookings || [], res.memberName);
+          })
+          .getMemberBookings(q);
+      } else {
+        // กรองจาก Mock Data
+        const filtered = currentBookings.filter(b => b.memberInfo.includes(q) || b.bookingCode.includes(q));
+        renderMemberResults(filtered, 'คุณ ' + q);
+      }
+    }
+
+    function renderMemberResults(bookings, memberName) {
+      const container = document.getElementById('member-history-result');
+      if (!bookings || bookings.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <i class="fa-regular fa-folder-open" style="font-size: 2.5rem; margin-bottom: 0.5rem;"></i>
+            <p>ไม่พบประวัติการจองสำหรับข้อมูลนี้</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>รหัสการจอง</th>
+                <th>ห้องประชุม</th>
+                <th>วันที่</th>
+                <th>เวลาใช้งาน</th>
+                <th>ยอดชำระ</th>
+                <th>สถานะการชำระเงิน</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      bookings.forEach(b => {
+        html += `
+          <tr>
+            <td><b>${b.bookingCode}</b></td>
+            <td>${b.roomName}</td>
+            <td>${b.bookingDate}</td>
+            <td>${b.startTime} - ${b.endTime} น.</td>
+            <td style="color: var(--primary); font-weight: 600;">฿${b.totalPrice.toLocaleString()}</td>
+            <td>
+              <span class="pill-status ${b.paymentStatus === 'Paid' ? 'pill-paid' : 'pill-pending'}">
+                ${b.paymentStatus === 'Paid' ? 'ชำระแล้ว' : 'รอชำระ'}
+              </span>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      container.innerHTML = html;
+    }
+
+    // Render แดชบอร์ด Admin
+    function renderAdminBookings(bookings) {
+      const tbody = document.getElementById('admin-bookings-tbody');
+      tbody.innerHTML = '';
+
+      let totalRev = 0;
+      bookings.forEach(b => {
+        totalRev += Number(b.totalPrice || 0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><b>${b.bookingCode}</b></td>
+          <td>${b.memberInfo}</td>
+          <td>${b.roomName}</td>
+          <td>${b.bookingDate} (${b.startTime} - ${b.endTime})</td>
+          <td style="font-weight: 600; color: var(--primary);">฿${Number(b.totalPrice).toLocaleString()}</td>
+          <td>${b.paymentMethod || 'PromptPay'}</td>
+          <td>
+            <span class="pill-status ${b.paymentStatus === 'Paid' ? 'pill-paid' : 'pill-pending'}" id="status-pill-${b.bookingCode}">
+              ${b.paymentStatus === 'Paid' ? 'ชำระแล้ว' : 'รอชำระ'}
+            </span>
+          </td>
+          <td>
+            <button class="btn-action" onclick="togglePaymentStatus('${b.bookingCode}')">
+              เปลี่ยนสถานะ
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('admin-kpi-bookings').innerText = `${bookings.length} รายการ`;
+      document.getElementById('admin-kpi-revenue').innerText = `฿${totalRev.toLocaleString()}`;
+    }
+
+    // เปลี่ยนสถานะชำระเงินในหน้า Admin
+    function togglePaymentStatus(bookingCode) {
+      const b = currentBookings.find(x => x.bookingCode === bookingCode);
+      if (!b) return;
+
+      const newStatus = b.paymentStatus === 'Paid' ? 'Pending' : 'Paid';
+      b.paymentStatus = newStatus;
+
+      if (isAppsScript) {
+        google.script.run
+          .withSuccessHandler(res => {
+            showToast(res.message);
+            renderAdminBookings(currentBookings);
+          })
+          .updatePaymentStatus(bookingCode, newStatus);
+      } else {
+        renderAdminBookings(currentBookings);
+        showToast(`อัปเดตสถานะการจอง ${bookingCode} เป็น ${newStatus} แล้ว`);
+      }
+    }
+
+    // เปลี่ยน Theme (Dark / Light)
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const target = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', target);
+      const icon = document.getElementById('theme-icon');
+      icon.className = target === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    // แจ้งเตือน Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+</html>

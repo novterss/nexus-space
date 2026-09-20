@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 720" width="1150" height="720" style="background:#f8fafc; font-family:'Segoe UI', Tahoma, sans-serif;">
+  <defs>
+    <!-- Table Header Gradients -->
+    <linearGradient id="headerBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dbeafe" />
+      <stop offset="100%" stop-color="#bfdbfe" />
+    </linearGradient>
+    <linearGradient id="headerAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#fde68a" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Title & Info -->
+  <text x="40" y="32" font-size="18" font-weight="bold" fill="#1e3a8a">ER Diagram: ระบบจองห้องประชุมและ Co-working Space (CSC362)</text>
+  <text x="40" y="52" font-size="12" fill="#64748b">ความสัมพันธ์ระดับฐานข้อมูล Relational Database (1:M / Many-to-Many via Junction Table)</text>
+  <text x="880" y="32" font-size="12" font-weight="bold" fill="#334155">นักศึกษา: 6800401 ณพัชรกัณฑ์ พัชญ์ชัยพงศา</text>
+  <text x="880" y="50" font-size="12" fill="#64748b">วิชา: CSC362-64 sec02</text>
+
+  <!-- Grid Dots Background -->
+  <g opacity="0.3">
+    <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#94a3b8" />
+    </pattern>
+    <rect x="20" y="70" width="1110" height="630" fill="url(#dotGrid)" rx="8" stroke="#cbd5e1" />
+  </g>
+
+  <!-- Relationship Lines -->
+  <!-- 1. MEMBER (1) -> BOOKING (M) -->
+  <path d="M 270 140 L 350 140 L 350 170 L 430 170" stroke="#0f172a" stroke-width="2.5" fill="none" />
+  <text x="280" y="133" font-size="15" font-weight="bold" fill="#0f172a">1</text>
+  <text x="405" y="163" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
+
+  <!-- 2. ROOM (1) -> BOOKING (M) -->
+  <path d="M 870 140 L 790 140 L 790 195 L 710 195" stroke="#0f172a" stroke-width="2.5" fill="none" />
+  <text x="850" y="133" font-size="15" font-weight="bold" fill="#0f172a">1</text>
+  <text x="725" y="188" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
+
+  <!-- 3. BOOKING (1) -> BOOKING_EQUIPMENT (M) -->
+  <path d="M 570 380 L 570 450" stroke="#0f172a" stroke-width="2.5" fill="none" />
+  <text x="580" y="405" font-size="15" font-weight="bold" fill="#0f172a">1</text>
+  <text x="580" y="440" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
+
+  <!-- 4. EQUIPMENT (1) -> BOOKING_EQUIPMENT (M) -->
+  <path d="M 270 510 L 350 510 L 350 490 L 430 490" stroke="#0f172a" stroke-width="2.5" fill="none" />
+  <text x="280" y="503" font-size="15" font-weight="bold" fill="#0f172a">1</text>
+  <text x="405" y="483" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
+
+  <!-- 5. BOOKING (1) -> PAYMENT (M) -->
+  <path d="M 680 380 L 680 415 L 870 415 L 870 450" stroke="#0f172a" stroke-width="2.5" fill="none" />
+  <text x="660" y="405" font-size="15" font-weight="bold" fill="#0f172a">1</text>
+  <text x="880" y="440" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
+
+  <!-- 1. TABLE: MEMBER -->
+  <g filter="url(#shadow)" transform="translate(40, 90)">
+    <rect width="230" height="205" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
+    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
+    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">MEMBER</text>
+    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 MEMBER_CODE</text>
+    <text x="12" y="72" font-size="12" fill="#334155">FNAME</text>
+    <text x="12" y="96" font-size="12" fill="#334155">LNAME</text>
+    <text x="12" y="120" font-size="12" fill="#334155">PHONE</text>
+    <text x="12" y="144" font-size="12" fill="#334155">EMAIL</text>
+    <text x="12" y="168" font-size="12" fill="#334155">MEMBER_TYPE</text>
+    <text x="12" y="192" font-size="12" fill="#334155">REGISTER_DATE</text>
+  </g>
+
+  <!-- 2. TABLE: ROOM -->
+  <g filter="url(#shadow)" transform="translate(870, 90)">
+    <rect width="230" height="205" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
+    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
+    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">ROOM</text>
+    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 ROOM_CODE</text>
+    <text x="12" y="72" font-size="12" fill="#334155">ROOM_NAME</text>
+    <text x="12" y="96" font-size="12" fill="#334155">ROOM_TYPE</text>
+    <text x="12" y="120" font-size="12" fill="#334155">CAPACITY</text>
+    <text x="12" y="144" font-size="12" fill="#334155">PRICE_PER_HOUR</text>
+    <text x="12" y="168" font-size="12" fill="#334155">STATUS</text>
+    <text x="12" y="192" font-size="12" fill="#334155">FLOOR</text>
+  </g>
+
+  <!-- 3. TABLE: BOOKING (MAIN JUNCTION) -->
+  <g filter="url(#shadow)" transform="translate(430, 110)">
+    <rect width="280" height="235" rx="5" fill="#ffffff" stroke="#f59e0b" stroke-width="2" />
+    <rect width="280" height="32" rx="4" fill="url(#headerAmber)" />
+    <text x="12" y="21" font-size="14" font-weight="bold" fill="#78350f">BOOKING</text>
+    <text x="12" y="52" font-size="12" font-weight="bold" fill="#d97706">🔑 BOOKING_CODE</text>
+    <text x="12" y="76" font-size="12" font-weight="bold" fill="#2563eb">🔗 MEMBER_CODE (FK)</text>
+    <text x="12" y="100" font-size="12" font-weight="bold" fill="#2563eb">🔗 ROOM_CODE (FK)</text>
+    <text x="12" y="124" font-size="12" fill="#334155">BOOKING_DATE</text>
+    <text x="12" y="148" font-size="12" fill="#334155">START_TIME</text>
+    <text x="12" y="172" font-size="12" fill="#334155">END_TIME</text>
+    <text x="12" y="196" font-size="12" fill="#334155">STATUS</text>
+    <text x="12" y="220" font-size="12" font-weight="bold" fill="#0f172a">TOTAL_PRICE</text>
+  </g>
+
+  <!-- 4. TABLE: EQUIPMENT -->
+  <g filter="url(#shadow)" transform="translate(40, 440)">
+    <rect width="230" height="145" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
+    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
+    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">EQUIPMENT</text>
+    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 EQUIPMENT_CODE</text>
+    <text x="12" y="72" font-size="12" fill="#334155">EQUIPMENT_NAME</text>
+    <text x="12" y="96" font-size="12" fill="#334155">QTY</text>
+    <text x="12" y="120" font-size="12" fill="#334155">STATUS</text>
+  </g>
+
+  <!-- 5. TABLE: BOOKING_EQUIPMENT (JUNCTION TABLE) -->
+  <g filter="url(#shadow)" transform="translate(430, 440)">
+    <rect width="280" height="130" rx="5" fill="#ffffff" stroke="#f59e0b" stroke-width="2" />
+    <rect width="280" height="32" rx="4" fill="url(#headerAmber)" />
+    <text x="12" y="21" font-size="13" font-weight="bold" fill="#78350f">BOOKING_EQUIPMENT (Junction M:M)</text>
+    <text x="12" y="52" font-size="12" font-weight="bold" fill="#d97706">🔑 BOOKING_CODE (PK, FK)</text>
+    <text x="12" y="76" font-size="12" font-weight="bold" fill="#d97706">🔑 EQUIPMENT_CODE (PK, FK)</text>
+    <text x="12" y="100" font-size="12" fill="#334155">QTY_USED</text>
+  </g>
+
+  <!-- 6. TABLE: PAYMENT -->
+  <g filter="url(#shadow)" transform="translate(870, 440)">
+    <rect width="230" height="175" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
+    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
+    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">PAYMENT</text>
+    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 PAYMENT_CODE</text>
+    <text x="12" y="72" font-size="12" font-weight="bold" fill="#2563eb">🔗 BOOKING_CODE (FK)</text>
+    <text x="12" y="96" font-size="12" fill="#334155">PAYMENT_DATE</text>
+    <text x="12" y="120" font-size="12" fill="#334155">AMOUNT</text>
+    <text x="12" y="144" font-size="12" fill="#334155">METHOD</text>
+    <text x="12" y="168" font-size="12" fill="#334155">STATUS</text>
+  </g>
+
+</svg>

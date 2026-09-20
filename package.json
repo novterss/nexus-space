@@ -1,0 +1,25 @@
+{
+  "name": "nexus-space",
+  "version": "1.0.0",
+  "description": "Meeting Room & Co-working Space Booking System | ระบบจองห้องประชุมและ Co-working Space",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "booking-system",
+    "meeting-room",
+    "co-working-space",
+    "postgresql",
+    "database",
+    "csc362",
+    "google-apps-script"
+  ],
+  "author": "Naphatcharakan Patchaipongsa (6800401)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Novterss/nexus-space"
+  }
+}
