@@ -22,3 +22,12 @@ desktop.ini
 
 # Artifacts
 *.md.metadata.json
+
+# Personal Notes & Submission Guides
+CANVA_SLIDES_AND_SCRIPT.md
+PROMPT_FOR_GEMINI_SLIDES.md
+PROJECT_SUBMISSION_INFO.md
+STUDY_GUIDE_QA.md
+GITHUB_SETUP_AND_DEPLOY.md
+PORTFOLIO_PROFILE_TEMPLATE.md
+

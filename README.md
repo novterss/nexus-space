@@ -300,7 +300,7 @@ nexus-space/
 
 **นายณพัชรกัณฑ์ พัชญ์ชัยพงศา**
 
-**Naphatcharakan Patchaipongsa**
+**Naphatcharakan Phatchaiphongsa**
 
 Student ID: 6800401
 
