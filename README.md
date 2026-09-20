@@ -79,20 +79,9 @@
 
 <div align="center">
 
-### 🏠 Room Listing | หน้ารายการห้อง
-> แสดงรายการห้องทั้งหมด พร้อมสถานะ ว่าง (สีเขียว) / ไม่ว่าง (สีแดง)
+### 🗃️ ER Diagram | แผนภาพความสัมพันธ์ (Relational Database)
 
-<!-- Replace with actual screenshot -->
-<!-- ![Room Listing](screenshots/room-listing.png) -->
-
-### 📅 Booking Form | ฟอร์มจองห้อง
-> เลือกห้อง วันที่ เวลา อุปกรณ์เสริม พร้อมคำนวณราคาอัตโนมัติ
-
-### 📊 Admin Dashboard | หน้าผู้ดูแลระบบ
-> ตรวจสอบรายการจองทั้งหมด อัปเดตสถานะ
-
-### 🗃️ ER Diagram | แผนภาพความสัมพันธ์
-> ออกแบบตามแนวคิด MS Access Relationship View
+![ER Diagram](er_diagram.svg)
 
 </div>
 
@@ -240,7 +229,6 @@ nexus-space/
 ├── 📄 index.html                    # Main web application (Frontend)
 ├── 📄 Code.gs                       # Google Apps Script backend
 ├── 📄 database_schema.sql           # PostgreSQL DDL + Seed Data
-├── 📄 er_diagram_access_style.html  # ER Diagram (MS Access style)
 ├── 📄 er_diagram.svg                # ER Diagram vector graphic
 ├── 📄 vercel.json                   # Vercel deployment config
 ├── 📄 package.json                  # Project metadata
