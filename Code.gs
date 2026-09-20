@@ -41,7 +41,7 @@ function initDatabase() {
   const schemas = {
     [SHEET_NAMES.MEMBER]: [
       ['MEMBER_CODE', 'FNAME', 'LNAME', 'PHONE', 'EMAIL', 'MEMBER_TYPE', 'REGISTER_DATE'],
-      ['M001', 'ณพัชรกัณฑ์', 'พัชญ์ชัยพงศา', '0812345678', 'naphat@cmu.ac.th', 'VIP', '2026-01-10'],
+      ['M001', 'ณพัชรกัณฑ์', 'พัชญ์ชัยพงศา', '0812345678', 'naphat.p@rsu.ac.th', 'VIP', '2026-01-10'],
       ['M002', 'สมชาย', 'ใจดี', '0899998888', 'somchai.j@gmail.com', 'General', '2026-02-15'],
       ['M003', 'อาริยา', 'วงศ์สว่าง', '0845551234', 'ariya.w@outlook.com', 'Student', '2026-03-01'],
       ['M004', 'กานต์', 'ธีรภาพ', '0823334444', 'karn.t@techcorp.io', 'VIP', '2026-03-12']
