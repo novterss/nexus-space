@@ -758,6 +758,9 @@
           <button class="pill" id="filter-avail-btn" onclick="toggleAvailableOnly(this)">
             🟢 เฉพาะห้องว่าง
           </button>
+          <button class="pill" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; font-weight: 600;" onclick="openMultiRoomModal()">
+            <i class="fa-solid fa-layer-group"></i> จองหลายห้องพร้อมกัน
+          </button>
         </div>
       </div>
 
@@ -840,9 +843,9 @@
     <!-- SECTION 4: DATABASE SCHEMA INSPECTOR (CSC362 REQUIREMENT) -->
     <section id="section-schema" style="display: none;">
       <div class="hero">
-        <div class="badge-sub">CSC362 Database Schema Architecture</div>
-        <h1>โครงสร้างฐานข้อมูล 6 ตาราง (PostgreSQL / Relational Model)</h1>
-        <p>ออกแบบตามหลัก Normalization พร้อมระบุ Primary Key, Foreign Key และความสัมพันธ์</p>
+        <div class="badge-sub">CSC362 Database Schema Architecture (Updated)</div>
+        <h1>โครงสร้างฐานข้อมูล 6 ตาราง (ปรับปรุงตามคำแนะนำอาจารย์)</h1>
+        <p>ยุบ PAYMENT รวมใน BOOKING (ลด Over-normalization) และเพิ่ม BOOKING_ROOM รองรับ Many-to-Many จองได้หลายห้องในบิลเดียว</p>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
@@ -862,7 +865,7 @@
         <!-- Table 2: ROOM -->
         <div class="room-card">
           <h3 style="color: var(--primary);"><i class="fa-solid fa-door-closed"></i> ROOM (ห้องประชุม)</h3>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: 1 : M กับ BOOKING</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: 1 : M กับ BOOKING_ROOM</p>
           <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
             <li><b style="color: #f59e0b;">🔑 ROOM_CODE (PK)</b> - รหัสห้อง (เช่น R101)</li>
             <li>ROOM_NAME - ชื่อห้อง</li>
@@ -883,45 +886,45 @@
             <li>EQUIPMENT_NAME - ชื่ออุปกรณ์เสริม</li>
             <li>QTY - จำนวนคงเหลือในสต๊อก</li>
             <li>STATUS - Available, Out of Stock</li>
+            <li>PRICE - ค่าบริการอุปกรณ์ต่อครั้ง</li>
           </ul>
         </div>
 
         <!-- Table 4: BOOKING -->
-        <div class="room-card">
-          <h3 style="color: var(--primary);"><i class="fa-solid fa-calendar-check"></i> BOOKING (การจองห้อง)</h3>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: เชื่อมกับ MEMBER, ROOM, PAYMENT</p>
+        <div class="room-card" style="border: 2px solid var(--primary);">
+          <h3 style="color: var(--primary);"><i class="fa-solid fa-calendar-check"></i> BOOKING (การจอง + ชำระเงิน)</h3>
+          <p style="font-size: 0.8rem; color: #10b981; margin-bottom: 0.75rem;">⚡ รวม Payment ลด Over-normalization</p>
           <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
             <li><b style="color: #f59e0b;">🔑 BOOKING_CODE (PK)</b> - รหัสการจอง</li>
             <li><span style="color: var(--accent);">MEMBER_CODE (FK)</span> - อ้างอิง MEMBER</li>
-            <li><span style="color: var(--accent);">ROOM_CODE (FK)</span> - อ้างอิง ROOM</li>
-            <li>BOOKING_DATE, START_TIME, END_TIME - ช่วงเวลาใช้งาน</li>
-            <li>STATUS - Confirmed, Pending, Cancelled</li>
+            <li>BOOKING_DATE, START_TIME, END_TIME - วันเวลาที่ใช้งาน</li>
             <li>TOTAL_PRICE - ราคารวมสุทธิ</li>
+            <li>STATUS - Confirmed, Pending, Cancelled</li>
+            <li style="color: #10b981;"><b>PAYMENT_METHOD</b> - PromptPay, Credit Card, Cash</li>
+            <li style="color: #10b981;"><b>PAYMENT_STATUS</b> - Paid, Pending, Refunded</li>
+            <li style="color: #10b981;"><b>PAYMENT_DATE</b> - เวลาที่ชำระเงิน</li>
           </ul>
         </div>
 
-        <!-- Table 5: BOOKING_EQUIPMENT -->
+        <!-- Table 5: BOOKING_ROOM -->
+        <div class="room-card" style="border: 2px solid var(--accent);">
+          <h3 style="color: var(--accent);"><i class="fa-solid fa-layer-group"></i> BOOKING_ROOM (ตารางเชื่อมใหม่ ⭐)</h3>
+          <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem;">🌟 Many-to-Many จองได้หลายห้องใน 1 บิล</p>
+          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+            <li><b style="color: #f59e0b;">🔑 BOOKING_CODE (Composite PK, FK)</b></li>
+            <li><b style="color: #f59e0b;">🔑 ROOM_CODE (Composite PK, FK)</b></li>
+            <li style="color: var(--text-muted); font-size: 0.8rem;">รองรับ 1 ใบจอง ผูกหลายห้องได้ตามกฎ 1NF/3NF</li>
+          </ul>
+        </div>
+
+        <!-- Table 6: BOOKING_EQUIPMENT -->
         <div class="room-card" style="border: 2px solid var(--accent);">
           <h3 style="color: var(--accent);"><i class="fa-solid fa-link"></i> BOOKING_EQUIPMENT (ตารางเชื่อม)</h3>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">🌟 Junction Table แก้ไข Many-to-Many (M:M)</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">🌟 Junction Table ยืมอุปกรณ์เสริม (Many-to-Many)</p>
           <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
             <li><b style="color: #f59e0b;">🔑 BOOKING_CODE (Composite PK, FK)</b></li>
             <li><b style="color: #f59e0b;">🔑 EQUIPMENT_CODE (Composite PK, FK)</b></li>
             <li>QTY_USED - จำนวนชิ้นที่ยืมใช้ในการจองนี้</li>
-          </ul>
-        </div>
-
-        <!-- Table 6: PAYMENT -->
-        <div class="room-card">
-          <h3 style="color: var(--primary);"><i class="fa-solid fa-credit-card"></i> PAYMENT (การชำระเงิน)</h3>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">ความสัมพันธ์: M : 1 กับ BOOKING</p>
-          <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
-            <li><b style="color: #f59e0b;">🔑 PAYMENT_CODE (PK)</b> - รหัสชำระเงิน</li>
-            <li><span style="color: var(--accent);">BOOKING_CODE (FK)</span> - อ้างอิง BOOKING</li>
-            <li>PAYMENT_DATE - วันและเวลาที่จ่าย</li>
-            <li>AMOUNT - ยอดชำระ</li>
-            <li>METHOD - PromptPay, Credit Card, Cash</li>
-            <li>STATUS - Paid, Pending, Refunded</li>
           </ul>
         </div>
       </div>
@@ -941,10 +944,6 @@
       </div>
 
       <form id="booking-form" onsubmit="handleBookingSubmit(event)">
-        <!-- Hidden Room Code -->
-        <input type="hidden" id="book-room-code">
-        <input type="hidden" id="book-price-per-hour">
-
         <!-- Date & Times -->
         <div class="form-group">
           <label class="form-label"><i class="fa-regular fa-calendar"></i> วันที่ต้องการเข้าใช้</label>
@@ -980,6 +979,17 @@
           </div>
         </div>
 
+        <!-- Room Selection (Many-to-Many via BOOKING_ROOM) -->
+        <div class="form-group">
+          <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+            <span><i class="fa-solid fa-door-open"></i> เลือกห้องประชุม (ติ๊กเลือกได้หลายห้องพร้อมกัน ⭐)</span>
+            <span style="font-size: 0.8rem; color: var(--accent);"><i class="fa-solid fa-layer-group"></i> ตาราง BOOKING_ROOM</span>
+          </label>
+          <div class="equipment-list" id="modal-rooms-checklist" style="max-height: 180px; overflow-y: auto;">
+            <!-- Rendered by JavaScript: checklist of rooms -->
+          </div>
+        </div>
+
         <!-- Add-on Equipments (M:M Relationship) -->
         <div class="form-group">
           <label class="form-label"><i class="fa-solid fa-sliders"></i> เลือกอุปกรณ์เสริมเพิ่มเติม (ตาราง BOOKING_EQUIPMENT)</label>
@@ -1006,7 +1016,7 @@
             <input type="tel" id="book-phone" class="form-control" placeholder="08XXXXXXXX" required>
           </div>
           <div class="form-group">
-            <label class="form-label">ช่องทางชำระเงิน</label>
+            <label class="form-label">ช่องทางชำระเงิน (บันทึกลง BOOKING โดยตรง)</label>
             <select id="book-payment-method" class="form-control">
               <option value="PromptPay">พร้อมเพย์ (PromptPay QR)</option>
               <option value="Credit Card">บัตรเครดิต / เดบิต</option>
@@ -1019,8 +1029,8 @@
         <!-- Real-time Live Price Calculation Box -->
         <div class="price-calculation-box">
           <div class="calc-row">
-            <span>ค่าห้องประชุม (<span id="calc-hours">3</span> ชั่วโมง)</span>
-            <span id="calc-room-cost">฿750</span>
+            <span>ห้องที่เลือก (<span id="calc-room-count">1</span> ห้อง, รวม ฿<span id="calc-room-rate">0</span>/ชม. &times; <span id="calc-hours">3</span> ชม.)</span>
+            <span id="calc-room-cost">฿0</span>
           </div>
           <div class="calc-row">
             <span>ค่าอุปกรณ์เสริมที่เลือก</span>
@@ -1028,7 +1038,7 @@
           </div>
           <div class="calc-total">
             <span>ยอดรวมสุทธิ (TOTAL_PRICE):</span>
-            <span class="amount" id="calc-grand-total">฿750</span>
+            <span class="amount" id="calc-grand-total">฿0</span>
           </div>
         </div>
 
@@ -1058,7 +1068,6 @@
     let currentRooms = [];
     let currentEquipments = [];
     let currentBookings = [];
-    let selectedRoom = null;
 
     // ตรวจสอบว่ารันบน Google Apps Script หรือเบราว์เซอร์ปกติ
     const isAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
@@ -1079,15 +1088,15 @@
       { equipmentCode: 'EQ04', equipmentName: 'กล้อง 360 องศาสำหรับ Hybrid Meeting', price: 80 }
     ];
 
+    // ข้อมูลเริ่มต้นจำลอง (แสดงให้เห็นการจอง 2 ห้องพร้อมกันใน BK20260902)
     const MOCK_ADMIN_BOOKINGS = [
-      { bookingCode: 'BK20260901', memberInfo: 'ณพัชรกัณฑ์ พัชญ์ชัยพงศา (0812345678)', roomName: 'Brainstorm Studio', bookingDate: '2026-09-21', startTime: '09:00', endTime: '12:00', status: 'Confirmed', totalPrice: 1000, paymentStatus: 'Paid', paymentMethod: 'PromptPay' },
-      { bookingCode: 'BK20260902', memberInfo: 'สมชาย ใจดี (0899998888)', roomName: 'Focus Pod B', bookingDate: '2026-09-21', startTime: '10:00', endTime: '12:00', status: 'Confirmed', totalPrice: 240, paymentStatus: 'Paid', paymentMethod: 'Credit Card' },
-      { bookingCode: 'BK20260903', memberInfo: 'กานต์ ธีรภาพ (0823334444)', roomName: 'Executive Boardroom', bookingDate: '2026-09-21', startTime: '13:00', endTime: '16:00', status: 'Confirmed', totalPrice: 1970, paymentStatus: 'Pending', paymentMethod: 'PromptPay' }
+      { bookingCode: 'BK20260901', memberInfo: 'ณพัชรกัณฑ์ พัชญ์ชัยพงศา (0812345678)', roomNames: 'Brainstorm Studio', bookingDate: '2026-09-21', startTime: '09:00', endTime: '12:00', status: 'Confirmed', totalPrice: 1000, paymentStatus: 'Paid', paymentMethod: 'PromptPay' },
+      { bookingCode: 'BK20260902', memberInfo: 'สมชาย ใจดี (0899998888)', roomNames: 'Focus Pod A, Focus Pod B', bookingDate: '2026-09-21', startTime: '10:00', endTime: '12:00', status: 'Confirmed', totalPrice: 480, paymentStatus: 'Paid', paymentMethod: 'Credit Card' },
+      { bookingCode: 'BK20260903', memberInfo: 'กานต์ ธีรภาพ (0823334444)', roomNames: 'Executive Boardroom', bookingDate: '2026-09-21', startTime: '13:00', endTime: '16:00', status: 'Confirmed', totalPrice: 1970, paymentStatus: 'Pending', paymentMethod: 'PromptPay' }
     ];
 
     // เริ่มต้นระบบเมื่อเปิดหน้าเว็บ
     window.addEventListener('DOMContentLoaded', () => {
-      // ตั้งค่าวันที่เริ่มต้นเป็นวันพรุ่งนี้
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       document.getElementById('book-date').value = tomorrow.toISOString().split('T')[0];
@@ -1172,6 +1181,32 @@
       });
     }
 
+    // ฟังก์ชัน Render รายการห้องประชุมใน Modal (ตารางเชื่อม BOOKING_ROOM)
+    function renderModalRoomChecklist(preselectedRoomCodes = []) {
+      const container = document.getElementById('modal-rooms-checklist');
+      container.innerHTML = '';
+
+      currentRooms.forEach(room => {
+        const isChecked = preselectedRoomCodes.includes(room.roomCode);
+        const item = document.createElement('label');
+        item.className = 'equipment-item';
+        item.style.cursor = 'pointer';
+        item.innerHTML = `
+          <div class="eq-info">
+            <input type="checkbox" class="room-modal-checkbox" value="${room.roomCode}" 
+                   data-name="${room.roomName}" data-price="${room.pricePerHour}" 
+                   ${isChecked ? 'checked' : ''} onchange="calculateLivePrice()">
+            <span>
+              <b>${room.roomName}</b> 
+              <span style="font-size: 0.8rem; color: var(--text-muted);">&bull; ${room.roomType} (${room.capacity} คน) ชั้น ${room.floor}</span>
+            </span>
+          </div>
+          <span class="eq-price" style="color: var(--primary); font-weight: 600;">฿${room.pricePerHour}/ชม.</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
     // ฟังก์ชัน Render อุปกรณ์เสริมในฟอร์มจอง
     function renderEquipmentChecklist(equipments) {
       const container = document.getElementById('equipment-checklist');
@@ -1236,18 +1271,29 @@
       });
     }
 
-    // เปิด Modal การจอง
+    // เปิด Modal สำหรับจองห้องที่เจาะจง
     function openBookingModal(roomCode) {
-      selectedRoom = currentRooms.find(r => r.roomCode === roomCode);
-      if (!selectedRoom) return;
-
-      document.getElementById('book-room-code').value = selectedRoom.roomCode;
-      document.getElementById('book-price-per-hour').value = selectedRoom.pricePerHour;
-      document.getElementById('modal-room-title').innerText = `จองห้อง: ${selectedRoom.roomName}`;
-      document.getElementById('modal-room-subtitle').innerText = `ประเภท: ${selectedRoom.roomType} | ความจุ: ${selectedRoom.capacity} คน | ฿${selectedRoom.pricePerHour}/ชม.`;
-
-      // รีเซ็ตการเลือกอุปกรณ์
+      renderModalRoomChecklist([roomCode]);
       document.querySelectorAll('.eq-checkbox').forEach(cb => cb.checked = false);
+      
+      const targetRoom = currentRooms.find(r => r.roomCode === roomCode);
+      document.getElementById('modal-room-title').innerText = `จองห้องประชุม: ${targetRoom ? targetRoom.roomName : 'ระบบจอง'}`;
+      document.getElementById('modal-room-subtitle').innerText = 'สามารถเลือกห้องเพิ่มเติมเพื่อจองหลายห้องในบิลเดียวกันได้ (ตาราง BOOKING_ROOM)';
+
+      calculateLivePrice();
+      document.getElementById('booking-modal').classList.add('active');
+    }
+
+    // เปิด Modal สำหรับเลือกหลายห้องพร้อมกัน
+    function openMultiRoomModal() {
+      // ติ๊กเลือกห้องแรกที่เป็น Available เป็นค่าเริ่มต้น
+      const firstAvail = currentRooms.find(r => r.status === 'Available');
+      const defaultRooms = firstAvail ? [firstAvail.roomCode] : [];
+      renderModalRoomChecklist(defaultRooms);
+      document.querySelectorAll('.eq-checkbox').forEach(cb => cb.checked = false);
+
+      document.getElementById('modal-room-title').innerText = 'จองหลายห้องพร้อมกัน (Multi-Room Booking)';
+      document.getElementById('modal-room-subtitle').innerText = 'ติ๊กเลือกห้องที่ต้องการจองพร้อมกันได้ตามสะดวก ระบบจะคำนวณราคารวมให้อัตโนมัติ';
 
       calculateLivePrice();
       document.getElementById('booking-modal').classList.add('active');
@@ -1257,18 +1303,27 @@
       document.getElementById('booking-modal').classList.remove('active');
     }
 
-    // คำนวณราคาแบบเรียลไทม์
+    // คำนวณราคาแบบเรียลไทม์ (คำนวณรวมทุกห้องที่เลือก)
     function calculateLivePrice() {
-      const pricePerHour = Number(document.getElementById('book-price-per-hour').value || 0);
       const startTime = document.getElementById('book-start-time').value;
       const endTime = document.getElementById('book-end-time').value;
 
       const startHour = parseInt(startTime.split(':')[0], 10);
       const endHour = parseInt(endTime.split(':')[0], 10);
       let hours = endHour - startHour;
-      if (hours <= 0) hours = 1; // กันคำนวณติดลบ
+      if (hours <= 0) hours = 1;
 
-      const roomCost = hours * pricePerHour;
+      // รวมราคาค่าบริการต่อชั่วโมงของทุกห้องที่เลือก
+      let totalRoomHourly = 0;
+      let selectedRoomCount = 0;
+      let selectedRoomNames = [];
+      document.querySelectorAll('.room-modal-checkbox:checked').forEach(cb => {
+        totalRoomHourly += Number(cb.getAttribute('data-price') || 0);
+        selectedRoomCount++;
+        selectedRoomNames.push(cb.getAttribute('data-name'));
+      });
+
+      const roomCost = hours * totalRoomHourly;
 
       // คำนวณค่าอุปกรณ์
       let eqCost = 0;
@@ -1278,18 +1333,32 @@
 
       const grandTotal = roomCost + eqCost;
 
+      document.getElementById('calc-room-count').innerText = selectedRoomCount;
+      document.getElementById('calc-room-rate').innerText = totalRoomHourly.toLocaleString();
       document.getElementById('calc-hours').innerText = hours;
       document.getElementById('calc-room-cost').innerText = `฿${roomCost.toLocaleString()}`;
       document.getElementById('calc-eq-cost').innerText = `฿${eqCost.toLocaleString()}`;
       document.getElementById('calc-grand-total').innerText = `฿${grandTotal.toLocaleString()}`;
 
-      return { hours, roomCost, eqCost, grandTotal };
+      return { hours, totalRoomHourly, selectedRoomCount, selectedRoomNames, roomCost, eqCost, grandTotal };
     }
 
     // บันทึกการจอง
     function handleBookingSubmit(e) {
       e.preventDefault();
       const calc = calculateLivePrice();
+
+      const selectedRoomCodes = [];
+      const selectedRoomNames = [];
+      document.querySelectorAll('.room-modal-checkbox:checked').forEach(cb => {
+        selectedRoomCodes.push(cb.value);
+        selectedRoomNames.push(cb.getAttribute('data-name'));
+      });
+
+      if (selectedRoomCodes.length === 0) {
+        alert('กรุณาเลือกห้องประชุมอย่างน้อย 1 ห้อง');
+        return;
+      }
 
       const selectedEqs = [];
       document.querySelectorAll('.eq-checkbox:checked').forEach(cb => {
@@ -1300,7 +1369,8 @@
       });
 
       const bookingPayload = {
-        roomCode: document.getElementById('book-room-code').value,
+        roomCodes: selectedRoomCodes,
+        roomNames: selectedRoomNames.join(', '),
         bookingDate: document.getElementById('book-date').value,
         startTime: document.getElementById('book-start-time').value,
         endTime: document.getElementById('book-end-time').value,
@@ -1316,7 +1386,7 @@
         google.script.run
           .withSuccessHandler(res => {
             if (res.success) {
-              showToast(`จองสำเร็จ! รหัสการจอง: ${res.bookingCode}`);
+              showToast(`จองสำเร็จ (${selectedRoomCodes.length} ห้อง)! รหัส: ${res.bookingCode}`);
               closeBookingModal();
               loadInitialData();
             } else {
@@ -1330,7 +1400,7 @@
         currentBookings.unshift({
           bookingCode: mockCode,
           memberInfo: `${bookingPayload.fname} ${bookingPayload.lname} (${bookingPayload.phone})`,
-          roomName: selectedRoom.roomName,
+          roomNames: bookingPayload.roomNames,
           bookingDate: bookingPayload.bookingDate,
           startTime: bookingPayload.startTime,
           endTime: bookingPayload.endTime,
@@ -1340,7 +1410,7 @@
           paymentMethod: bookingPayload.paymentMethod
         });
         renderAdminBookings(currentBookings);
-        showToast(`จองห้องสำเร็จ! รหัสการจอง: ${mockCode}`);
+        showToast(`จองสำเร็จ (${selectedRoomCodes.length} ห้อง)! รหัสการจอง: ${mockCode}`);
         closeBookingModal();
       }
     }
@@ -1384,7 +1454,7 @@
             <thead>
               <tr>
                 <th>รหัสการจอง</th>
-                <th>ห้องประชุม</th>
+                <th>ห้องประชุมที่จอง (BOOKING_ROOM)</th>
                 <th>วันที่</th>
                 <th>เวลาใช้งาน</th>
                 <th>ยอดชำระ</th>
@@ -1398,10 +1468,10 @@
         html += `
           <tr>
             <td><b>${b.bookingCode}</b></td>
-            <td>${b.roomName}</td>
+            <td><i class="fa-solid fa-door-open" style="color: var(--accent); margin-right: 4px;"></i> ${b.roomNames || b.roomName}</td>
             <td>${b.bookingDate}</td>
             <td>${b.startTime} - ${b.endTime} น.</td>
-            <td style="color: var(--primary); font-weight: 600;">฿${b.totalPrice.toLocaleString()}</td>
+            <td style="color: var(--primary); font-weight: 600;">฿${Number(b.totalPrice).toLocaleString()}</td>
             <td>
               <span class="pill-status ${b.paymentStatus === 'Paid' ? 'pill-paid' : 'pill-pending'}">
                 ${b.paymentStatus === 'Paid' ? 'ชำระแล้ว' : 'รอชำระ'}
@@ -1427,7 +1497,7 @@
         tr.innerHTML = `
           <td><b>${b.bookingCode}</b></td>
           <td>${b.memberInfo}</td>
-          <td>${b.roomName}</td>
+          <td><i class="fa-solid fa-door-open" style="color: var(--accent); margin-right: 4px;"></i> ${b.roomNames || b.roomName}</td>
           <td>${b.bookingDate} (${b.startTime} - ${b.endTime})</td>
           <td style="font-weight: 600; color: var(--primary);">฿${Number(b.totalPrice).toLocaleString()}</td>
           <td>${b.paymentMethod || 'PromptPay'}</td>

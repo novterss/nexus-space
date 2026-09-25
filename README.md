@@ -89,51 +89,52 @@
 
 ## 🗂️ Database Schema
 
-ระบบฐานข้อมูลประกอบด้วย **6 ตาราง** ออกแบบตามหลัก **Normalization** บน **PostgreSQL**:
+ระบบฐานข้อมูลประกอบด้วย **6 ตาราง** ออกแบบตามหลัก **Normalization (3NF)** บน **PostgreSQL** ปรับปรุงตามคำแนะนำของอาจารย์:
 
 ```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
-│   MEMBER     │     │     BOOKING      │     │     ROOM     │
-├──────────────┤     ├──────────────────┤     ├──────────────┤
-│🔑 MEMBER_CODE│────▶│🔑 BOOKING_CODE   │◀────│🔑 ROOM_CODE  │
-│  FNAME       │ 1:M │🔗 MEMBER_CODE(FK)│ M:1 │  ROOM_NAME   │
-│  LNAME       │     │🔗 ROOM_CODE  (FK)│     │  ROOM_TYPE   │
-│  PHONE       │     │  BOOKING_DATE    │     │  CAPACITY    │
-│  EMAIL       │     │  START_TIME      │     │  PRICE/HOUR  │
-│  MEMBER_TYPE │     │  END_TIME        │     │  STATUS      │
-│  REGISTER_DT │     │  STATUS          │     │  FLOOR       │
-└──────────────┘     │  TOTAL_PRICE     │     └──────────────┘
+┌──────────────┐     ┌──────────────────┐     ┌──────────────────┐     ┌──────────────┐
+│   MEMBER     │     │     BOOKING      │     │   BOOKING_ROOM   │     │     ROOM     │
+├──────────────┤     ├──────────────────┤     ├──────────────────┤     ├──────────────┤
+│🔑 MEMBER_CODE│────▶│🔑 BOOKING_CODE   │────▶│🔑🔗BOOKING_CODE  │◀────│🔑 ROOM_CODE  │
+│  FNAME       │ 1:M │🔗 MEMBER_CODE(FK)│ 1:M │🔑🔗ROOM_CODE     │ M:1 │  ROOM_NAME   │
+│  LNAME       │     │  BOOKING_DATE    │     └──────────────────┘     │  ROOM_TYPE   │
+│  PHONE       │     │  START_TIME      │           (หลายห้อง)          │  CAPACITY    │
+│  EMAIL       │     │  END_TIME        │                              │  PRICE/HOUR  │
+│  MEMBER_TYPE │     │  STATUS          │                              │  STATUS      │
+│  REGISTER_DT │     │  TOTAL_PRICE     │                              │  FLOOR       │
+└──────────────┘     │💳PAYMENT_METHOD  │                              └──────────────┘
+                     │💳PAYMENT_STATUS  │
+                     │💳PAYMENT_DATE    │
                      └────────┬─────────┘
                               │
-                    ┌─────────┴─────────┐
-                    │                   │
-           ┌────────▼────────┐  ┌───────▼───────┐
-           │BOOKING_EQUIPMENT│  │    PAYMENT    │
-           ├─────────────────┤  ├───────────────┤
-           │🔑🔗BOOKING_CODE │  │🔑 PAYMENT_CODE│
-           │🔑🔗EQUIPMENT_CD │  │🔗 BOOKING_CODE│
-           │  QTY_USED       │  │  PAYMENT_DATE │
-           └────────┬────────┘  │  AMOUNT       │
-                    │           │  METHOD       │
-           ┌────────▼────────┐  │  STATUS       │
-           │   EQUIPMENT     │  └───────────────┘
-           ├─────────────────┤
-           │🔑 EQUIPMENT_CODE│
-           │  EQUIPMENT_NAME │
-           │  QTY            │
-           │  STATUS         │
-           │  PRICE          │
-           └─────────────────┘
+                     ┌────────▼────────┐
+                     │BOOKING_EQUIPMENT│
+                     ├─────────────────┤
+                     │🔑🔗BOOKING_CODE │
+                     │🔑🔗EQUIPMENT_CD │
+                     │  QTY_USED       │
+                     └────────┬────────┘
+                              │ M:1
+                     ┌────────▼────────┐
+                     │   EQUIPMENT     │
+                     ├─────────────────┤
+                     │🔑 EQUIPMENT_CODE│
+                     │  EQUIPMENT_NAME │
+                     │  QTY            │
+                     │  STATUS         │
+                     │  PRICE          │
+                     └─────────────────┘
 ```
 
 ### Key Design Decisions | จุดเด่นของการออกแบบ
 
 | Concept | Description (EN) | คำอธิบาย (TH) |
 |---|---|---|
-| **Composite PK** | `BOOKING_EQUIPMENT` uses composite primary key (`BOOKING_CODE` + `EQUIPMENT_CODE`) | ใช้ Primary Key คู่ป้องกันข้อมูลซ้ำซ้อน |
-| **Junction Table** | Resolves Many-to-Many between BOOKING ↔ EQUIPMENT | ตารางเชื่อมแก้ปัญหาความสัมพันธ์ M:M |
+| **Merged Payment** | Payment fields integrated into `BOOKING` to prevent 1:1 Over-normalization | ยุบตารางชำระเงินรวมเข้าใน BOOKING ลดความซ้ำซ้อน 1:1 ตามคำแนะนำอาจารย์ |
+| **Multi-room (M:N)** | `BOOKING_ROOM` resolves Many-to-Many between BOOKING ↔ ROOM | รองรับการจองได้หลายห้องพร้อมกันในบิลเดียวผ่านตารางเชื่อม Composite PK |
+| **Composite PKs** | `BOOKING_ROOM` & `BOOKING_EQUIPMENT` use composite primary keys | ใช้ Primary Key คู่ป้องกันการบันทึกห้องซ้ำหรืออุปกรณ์ซ้ำในใบจองเดิม |
 | **TOTAL_PRICE** | Stored in BOOKING to preserve historical pricing (price-at-time-of-booking) | เก็บราคาจริง ณ วันจอง ไม่เปลี่ยนตามราคาปัจจุบัน |
-| **Time Overlap** | SQL constraint `CHECK (END_TIME > START_TIME)` + application-level overlap validation | ป้องกันจองเวลาซ้ำซ้อนทั้ง DB Level และ App Level |
+| **Time Overlap** | SQL constraint `CHECK (END_TIME > START_TIME)` + multi-room overlap validation | ป้องกันจองเวลาซ้ำซ้อนทุกห้องที่เลือก ทั้ง DB Level และ App Level |
 
 ---
 
