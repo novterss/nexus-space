@@ -5,19 +5,20 @@
  * นักศึกษา: 6800401 นายณพัชรกัณฑ์ พัชญ์ชัยพงศา
  * 
  * ไฟล์: Code.gs (Google Apps Script Backend Controller)
- * หน้าที่: เชื่อมต่อ Google Sheets จัดการตารางข้อมูล 6 ตาราง
- * และให้บริการ API สำหรับ Web App
+ * โครงสร้างใหม่ตามคำแนะนำอาจารย์:
+ * 1. ยุบตาราง PAYMENT รวมเข้าในตาราง BOOKING (แก้ปัญหา 1:1 Over-normalization)
+ * 2. เพิ่มตารางเชื่อม BOOKING_ROOM (Many-to-Many ทำให้จองหลายห้องพร้อมกันได้ใน 1 บิล)
  * ====================================================================
  */
 
-// ชื่อแผ่นงาน (Sheets) ทั้ง 6 ตารางตามฐานข้อมูล
+// ชื่อแผ่นงาน (Sheets) 6 ตารางตามฐานข้อมูลที่ปรับปรุงแล้ว
 const SHEET_NAMES = {
   MEMBER: 'MEMBER',
   ROOM: 'ROOM',
   EQUIPMENT: 'EQUIPMENT',
   BOOKING: 'BOOKING',
-  BOOKING_EQUIPMENT: 'BOOKING_EQUIPMENT',
-  PAYMENT: 'PAYMENT'
+  BOOKING_ROOM: 'BOOKING_ROOM',
+  BOOKING_EQUIPMENT: 'BOOKING_EQUIPMENT'
 };
 
 /**
@@ -31,13 +32,18 @@ function doGet(e) {
 }
 
 /**
- * 2. ฟังก์ชันเริ่มต้นฐานข้อมูล (กดครั้งเดียว ระบบจะสร้าง 6 Sheets พร้อม Mock Data ให้ทันที)
- * สามารถเปิด Script Editor แล้วกด Run ฟังก์ชัน "initDatabase" ได้เลย
+ * 2. ฟังก์ชันเริ่มต้นฐานข้อมูล (สร้าง Sheets พร้อม Mock Data ตามโครงสร้างใหม่)
  */
 function initDatabase() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   
-  // กำหนดหัวตารางของแต่ละ Sheet
+  // ลบ Sheet PAYMENT เดิมออกหากมีอยู่ (เนื่องจากยุบรวมเข้า BOOKING แล้ว)
+  const oldPaymentSheet = ss.getSheetByName('PAYMENT');
+  if (oldPaymentSheet) {
+    try { ss.deleteSheet(oldPaymentSheet); } catch(e) {}
+  }
+
+  // กำหนดหัวตารางและ Mock Data ของแต่ละ Sheet
   const schemas = {
     [SHEET_NAMES.MEMBER]: [
       ['MEMBER_CODE', 'FNAME', 'LNAME', 'PHONE', 'EMAIL', 'MEMBER_TYPE', 'REGISTER_DATE'],
@@ -62,10 +68,19 @@ function initDatabase() {
       ['EQ04', 'กล้อง 360 องศาสำหรับ Hybrid Meeting', 3, 'Available', 80]
     ],
     [SHEET_NAMES.BOOKING]: [
-      ['BOOKING_CODE', 'MEMBER_CODE', 'ROOM_CODE', 'BOOKING_DATE', 'START_TIME', 'END_TIME', 'STATUS', 'TOTAL_PRICE'],
-      ['BK20260901', 'M001', 'R201', '2026-09-21', '09:00', '12:00', 'Confirmed', 1000],
-      ['BK20260902', 'M002', 'R102', '2026-09-21', '10:00', '12:00', 'Confirmed', 240],
-      ['BK20260903', 'M004', 'R301', '2026-09-21', '13:00', '16:00', 'Confirmed', 1970]
+      // รวมฟิลด์ชำระเงินเข้ามาในตาราง BOOKING โดยตรง
+      ['BOOKING_CODE', 'MEMBER_CODE', 'BOOKING_DATE', 'START_TIME', 'END_TIME', 'STATUS', 'TOTAL_PRICE', 'PAYMENT_METHOD', 'PAYMENT_STATUS', 'PAYMENT_DATE'],
+      ['BK20260901', 'M001', '2026-09-21', '09:00', '12:00', 'Confirmed', 1000, 'PromptPay', 'Paid', '2026-09-20 10:30'],
+      ['BK20260902', 'M002', '2026-09-21', '10:00', '12:00', 'Confirmed', 480, 'Credit Card', 'Paid', '2026-09-20 11:15'], // จอง 2 ห้องพร้อมกัน
+      ['BK20260903', 'M004', '2026-09-21', '13:00', '16:00', 'Confirmed', 1970, 'PromptPay', 'Pending', '']
+    ],
+    [SHEET_NAMES.BOOKING_ROOM]: [
+      // ตารางเชื่อม Many-to-Many: 1 การจองเลือกได้หลายห้อง
+      ['BOOKING_CODE', 'ROOM_CODE'],
+      ['BK20260901', 'R201'],
+      ['BK20260902', 'R101'], // บิล BK20260902 จองห้อง Focus Pod A
+      ['BK20260902', 'R102'], // และจองห้อง Focus Pod B พร้อมกันในบิลเดียว!
+      ['BK20260903', 'R301']
     ],
     [SHEET_NAMES.BOOKING_EQUIPMENT]: [
       ['BOOKING_CODE', 'EQUIPMENT_CODE', 'QTY_USED'],
@@ -74,16 +89,9 @@ function initDatabase() {
       ['BK20260903', 'EQ01', 1],
       ['BK20260903', 'EQ03', 2],
       ['BK20260903', 'EQ04', 1]
-    ],
-    [SHEET_NAMES.PAYMENT]: [
-      ['PAYMENT_CODE', 'BOOKING_CODE', 'PAYMENT_DATE', 'AMOUNT', 'METHOD', 'STATUS'],
-      ['PAY20260901', 'BK20260901', '2026-09-20 10:30', 1000, 'PromptPay', 'Paid'],
-      ['PAY20260902', 'BK20260902', '2026-09-20 11:15', 240, 'Credit Card', 'Paid'],
-      ['PAY20260903', 'BK20260903', '2026-09-20 14:00', 1970, 'PromptPay', 'Paid']
     ]
   };
 
-  // วนลูปสร้างแต่ละ Sheet
   for (let sheetName in schemas) {
     let sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
@@ -95,18 +103,16 @@ function initDatabase() {
     const rows = schemas[sheetName];
     sheet.getRange(1, 1, rows.length, rows[0].length).setValues(rows);
     
-    // ตกแต่งหัวตาราง: สีน้ำเงินเข้ม ตัวอักษรสีขาว
     const headerRange = sheet.getRange(1, 1, 1, rows[0].length);
     headerRange.setBackground('#1e293b').setFontColor('#ffffff').setFontWeight('bold');
     sheet.autoResizeColumns(1, rows[0].length);
   }
 
-  return { success: true, message: 'สร้างฐานข้อมูลและ Mock Data ครบ 6 ตารางเรียบร้อยแล้ว!' };
+  return { success: true, message: 'ปรับปรุงฐานข้อมูลตามคำแนะนำอาจารย์ (ยุบ Payment + จองหลายห้อง) เรียบร้อยแล้ว!' };
 }
 
 /**
- * 3. ฟังก์ชันดึงรายการห้องประชุมทั้งหมด (สำหรับหน้าแรก)
- * คืนค่ารายการห้องพร้อมสถานะ Available / Occupied
+ * 3. ฟังก์ชันดึงรายการห้องประชุมทั้งหมด
  */
 function getRooms() {
   try {
@@ -117,9 +123,7 @@ function getRooms() {
     const data = sheet.getDataRange().getValues();
     if (data.length <= 1) return [];
     
-    const headers = data[0];
     const rooms = [];
-    
     for (let i = 1; i < data.length; i++) {
       let row = data[i];
       rooms.push({
@@ -128,7 +132,7 @@ function getRooms() {
         roomType: row[2],
         capacity: Number(row[3]),
         pricePerHour: Number(row[4]),
-        status: row[5], // Available (เขียว) หรือ Occupied (แดง)
+        status: row[5],
         floor: Number(row[6])
       });
     }
@@ -139,7 +143,7 @@ function getRooms() {
 }
 
 /**
- * 4. ฟังก์ชันดึงรายการอุปกรณ์เสริม (สำหรับฟอร์มจอง)
+ * 4. ฟังก์ชันดึงรายการอุปกรณ์เสริม
  */
 function getEquipments() {
   try {
@@ -166,21 +170,31 @@ function getEquipments() {
 }
 
 /**
- * 5. ฟังก์ชันบันทึกการจองห้อง (Transaction: ลง BOOKING, BOOKING_EQUIPMENT, PAYMENT)
+ * 5. ฟังก์ชันบันทึกการจองห้อง (Transaction: ลง BOOKING, BOOKING_ROOM หลายห้อง, และ BOOKING_EQUIPMENT)
  */
 function submitBooking(data) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const bookingSheet = ss.getSheetByName(SHEET_NAMES.BOOKING);
+    const bookingRoomSheet = ss.getSheetByName(SHEET_NAMES.BOOKING_ROOM);
     const bookingEqSheet = ss.getSheetByName(SHEET_NAMES.BOOKING_EQUIPMENT);
-    const paymentSheet = ss.getSheetByName(SHEET_NAMES.PAYMENT);
     const memberSheet = ss.getSheetByName(SHEET_NAMES.MEMBER);
     
-    if (!bookingSheet) {
+    if (!bookingSheet || !bookingRoomSheet) {
       throw new Error('ไม่พบตารางฐานข้อมูล กรุณารัน initDatabase ก่อน');
     }
 
-    // 5.1 ตรวจสอบหรือสร้างข้อมูลสมาชิก (หากไม่มีรหัส)
+    // แปลง roomCodes ให้เป็น Array เสมอ (รองรับทั้งจอง 1 ห้อง และหลายห้อง)
+    let selectedRooms = data.roomCodes;
+    if (!selectedRooms || !Array.isArray(selectedRooms)) {
+      selectedRooms = data.roomCode ? [data.roomCode] : [];
+    }
+
+    if (selectedRooms.length === 0) {
+      return { success: false, message: 'กรุณาเลือกห้องประชุมอย่างน้อย 1 ห้อง' };
+    }
+
+    // 5.1 ตรวจสอบหรือสร้างข้อมูลสมาชิก
     let memberCode = data.memberCode;
     if (!memberCode) {
       memberCode = 'M' + Math.floor(100 + Math.random() * 900);
@@ -196,43 +210,70 @@ function submitBooking(data) {
       ]);
     }
 
-    // 5.2 ตรวจสอบการจองซ้ำ (Overlap Time Validation)
+    // 5.2 ตรวจสอบการจองซ้ำสำหรับทุกห้องที่เลือก
     const existingBookings = bookingSheet.getDataRange().getValues();
+    const existingBookingRooms = bookingRoomSheet.getDataRange().getValues();
+
+    // สร้าง Map หาว่า bookingCode ไหนจองห้องอะไรบ้าง
+    const bookingRoomMap = {};
+    for (let j = 1; j < existingBookingRooms.length; j++) {
+      let bCode = existingBookingRooms[j][0];
+      let rCode = existingBookingRooms[j][1];
+      if (!bookingRoomMap[bCode]) bookingRoomMap[bCode] = [];
+      bookingRoomMap[bCode].push(rCode);
+    }
+
     for (let i = 1; i < existingBookings.length; i++) {
       let b = existingBookings[i];
-      let bRoom = b[2];
-      let bDate = Utilities.formatDate(new Date(b[3]), 'GMT+7', 'yyyy-MM-dd');
-      let bStart = String(b[4]);
-      let bEnd = String(b[5]);
-      let bStatus = b[6];
+      let bCode = b[0];
+      let bDate = Utilities.formatDate(new Date(b[2]), 'GMT+7', 'yyyy-MM-dd');
+      let bStart = String(b[3]);
+      let bEnd = String(b[4]);
+      let bStatus = b[5];
 
-      if (bRoom === data.roomCode && bDate === data.bookingDate && bStatus !== 'Cancelled') {
-        // เช็คช่วงเวลาทับซ้อน (StartA < EndB && EndA > StartB)
-        if (data.startTime < bEnd && data.endTime > bStart) {
-          return {
-            success: false,
-            message: 'ขออภัย ห้องนี้มีผู้จองในช่วงเวลา ' + bStart + ' - ' + bEnd + ' แล้ว'
-          };
+      if (bDate === data.bookingDate && bStatus !== 'Cancelled') {
+        const roomsInThisBooking = bookingRoomMap[bCode] || [];
+        for (let r = 0; r < selectedRooms.length; r++) {
+          let reqRoom = selectedRooms[r];
+          if (roomsInThisBooking.indexOf(reqRoom) !== -1) {
+            if (data.startTime < bEnd && data.endTime > bStart) {
+              return {
+                success: false,
+                message: 'ขออภัย ห้อง ' + reqRoom + ' มีผู้จองในช่วงเวลา ' + bStart + ' - ' + bEnd + ' แล้ว'
+              };
+            }
+          }
         }
       }
     }
 
-    // 5.3 สร้างรหัสการจองและบันทึกลง BOOKING
+    // 5.3 สร้างรหัสการจองและบันทึกลง BOOKING พร้อมข้อมูลชำระเงิน
     const timestamp = Utilities.formatDate(new Date(), 'GMT+7', 'yyyyMMddHHmmss');
     const bookingCode = 'BK' + timestamp.substring(2, 10) + Math.floor(10 + Math.random() * 90);
+    const payDate = Utilities.formatDate(new Date(), 'GMT+7', 'yyyy-MM-dd HH:mm');
     
     bookingSheet.appendRow([
       bookingCode,
       memberCode,
-      data.roomCode,
       data.bookingDate,
       data.startTime,
       data.endTime,
       'Confirmed',
-      Number(data.totalPrice)
+      Number(data.totalPrice),
+      data.paymentMethod || 'PromptPay',
+      'Paid',
+      payDate
     ]);
 
-    // 5.4 บันทึกลง BOOKING_EQUIPMENT (Junction Table)
+    // 5.4 บันทึกลง BOOKING_ROOM (รองรับหลายห้องใน 1 บิล)
+    selectedRooms.forEach(function(roomCode) {
+      bookingRoomSheet.appendRow([
+        bookingCode,
+        roomCode
+      ]);
+    });
+
+    // 5.5 บันทึกลง BOOKING_EQUIPMENT
     if (data.equipments && data.equipments.length > 0) {
       data.equipments.forEach(function(eq) {
         bookingEqSheet.appendRow([
@@ -243,23 +284,10 @@ function submitBooking(data) {
       });
     }
 
-    // 5.5 สร้างรายการบันทึก PAYMENT
-    const paymentCode = 'PAY' + timestamp.substring(2, 10) + Math.floor(10 + Math.random() * 90);
-    const payDate = Utilities.formatDate(new Date(), 'GMT+7', 'yyyy-MM-dd HH:mm');
-    paymentSheet.appendRow([
-      paymentCode,
-      bookingCode,
-      payDate,
-      Number(data.totalPrice),
-      data.paymentMethod || 'PromptPay',
-      'Paid'
-    ]);
-
     return {
       success: true,
       bookingCode: bookingCode,
-      paymentCode: paymentCode,
-      message: 'จองห้องสำเร็จเรียบร้อยแล้ว!'
+      message: 'จองห้องสำเร็จเรียบร้อยแล้ว (จำนวน ' + selectedRooms.length + ' ห้อง)!'
     };
 
   } catch (err) {
@@ -268,15 +296,15 @@ function submitBooking(data) {
 }
 
 /**
- * 6. ฟังก์ชันดึงประวัติการจองของสมาชิกตามเบอร์โทรหรืออีเมล
+ * 6. ฟังก์ชันดึงประวัติการจองของสมาชิกตามเบอร์โทรหรือรหัส
  */
 function getMemberBookings(searchQuery) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const memberSheet = ss.getSheetByName(SHEET_NAMES.MEMBER);
     const bookingSheet = ss.getSheetByName(SHEET_NAMES.BOOKING);
+    const bookingRoomSheet = ss.getSheetByName(SHEET_NAMES.BOOKING_ROOM);
     const roomSheet = ss.getSheetByName(SHEET_NAMES.ROOM);
-    const paymentSheet = ss.getSheetByName(SHEET_NAMES.PAYMENT);
     
     if (!bookingSheet) return [];
 
@@ -284,7 +312,6 @@ function getMemberBookings(searchQuery) {
     let targetMemberCode = null;
     let memberName = '';
     
-    // ค้นหาสมาชิก
     for (let i = 1; i < members.length; i++) {
       if (members[i][0] == searchQuery || members[i][3] == searchQuery || members[i][4] == searchQuery) {
         targetMemberCode = members[i][0];
@@ -297,40 +324,43 @@ function getMemberBookings(searchQuery) {
       return { success: false, message: 'ไม่พบข้อมูลสมาชิกจากเบอร์โทรหรือรหัสที่ระบุ' };
     }
 
-    // ดึงห้องเพื่อหาชื่อห้อง
+    // ทำ Map รหัสห้อง -> ชื่อห้อง
     const rooms = roomSheet.getDataRange().getValues();
     const roomMap = {};
     for (let i = 1; i < rooms.length; i++) {
       roomMap[rooms[i][0]] = rooms[i][1];
     }
 
-    // ดึงสถานะการจ่ายเงิน
-    const payments = paymentSheet.getDataRange().getValues();
-    const payMap = {};
-    for (let i = 1; i < payments.length; i++) {
-      payMap[payments[i][1]] = { status: payments[i][5], method: payments[i][4] };
+    // ทำ Map หาห้องทั้งหมดของแต่ละ bookingCode
+    const bookingRooms = bookingRoomSheet.getDataRange().getValues();
+    const bRoomNamesMap = {};
+    for (let j = 1; j < bookingRooms.length; j++) {
+      let bCode = bookingRooms[j][0];
+      let rCode = bookingRooms[j][1];
+      let rName = roomMap[rCode] || rCode;
+      if (!bRoomNamesMap[bCode]) bRoomNamesMap[bCode] = [];
+      bRoomNamesMap[bCode].push(rName);
     }
 
-    // ดึงรายการจอง
     const bookings = bookingSheet.getDataRange().getValues();
     const result = [];
     for (let i = 1; i < bookings.length; i++) {
       let b = bookings[i];
       if (b[1] == targetMemberCode) {
-        let bDate = Utilities.formatDate(new Date(b[3]), 'GMT+7', 'yyyy-MM-dd');
-        let payInfo = payMap[b[0]] || { status: 'Pending', method: '-' };
+        let bDate = Utilities.formatDate(new Date(b[2]), 'GMT+7', 'yyyy-MM-dd');
+        let assignedRooms = bRoomNamesMap[b[0]] || ['ห้องประชุม'];
         result.push({
           bookingCode: b[0],
           memberName: memberName,
-          roomCode: b[2],
-          roomName: roomMap[b[2]] || b[2],
+          roomNames: assignedRooms.join(', '),
           bookingDate: bDate,
-          startTime: b[4],
-          endTime: b[5],
-          status: b[6],
-          totalPrice: b[7],
-          paymentStatus: payInfo.status,
-          paymentMethod: payInfo.method
+          startTime: b[3],
+          endTime: b[4],
+          status: b[5],
+          totalPrice: b[6],
+          paymentMethod: b[7],
+          paymentStatus: b[8],
+          paymentDate: b[9]
         });
       }
     }
@@ -348,11 +378,11 @@ function getAllBookingsAdmin() {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const bookingSheet = ss.getSheetByName(SHEET_NAMES.BOOKING);
+    const bookingRoomSheet = ss.getSheetByName(SHEET_NAMES.BOOKING_ROOM);
     const memberSheet = ss.getSheetByName(SHEET_NAMES.MEMBER);
     const roomSheet = ss.getSheetByName(SHEET_NAMES.ROOM);
-    const paymentSheet = ss.getSheetByName(SHEET_NAMES.PAYMENT);
     
-    if (!bookingSheet) return getMockAdminBookings();
+    if (!bookingSheet || !bookingRoomSheet) return getMockAdminBookings();
 
     const members = memberSheet.getDataRange().getValues();
     const memberMap = {};
@@ -366,50 +396,56 @@ function getAllBookingsAdmin() {
       roomMap[rooms[i][0]] = rooms[i][1];
     }
 
-    const payments = paymentSheet.getDataRange().getValues();
-    const payMap = {};
-    for (let i = 1; i < payments.length; i++) {
-      payMap[payments[i][1]] = { code: payments[i][0], status: payments[i][5], method: payments[i][4] };
+    const bookingRooms = bookingRoomSheet.getDataRange().getValues();
+    const bRoomNamesMap = {};
+    for (let j = 1; j < bookingRooms.length; j++) {
+      let bCode = bookingRooms[j][0];
+      let rCode = bookingRooms[j][1];
+      let rName = roomMap[rCode] || rCode;
+      if (!bRoomNamesMap[bCode]) bRoomNamesMap[bCode] = [];
+      bRoomNamesMap[bCode].push(rName);
     }
 
     const bookings = bookingSheet.getDataRange().getValues();
     const list = [];
     for (let i = 1; i < bookings.length; i++) {
       let b = bookings[i];
-      let bDate = Utilities.formatDate(new Date(b[3]), 'GMT+7', 'yyyy-MM-dd');
-      let pay = payMap[b[0]] || { status: 'Pending', method: '-' };
+      let bDate = Utilities.formatDate(new Date(b[2]), 'GMT+7', 'yyyy-MM-dd');
+      let assignedRooms = bRoomNamesMap[b[0]] || ['ห้องประชุม'];
       list.push({
         bookingCode: b[0],
         memberInfo: memberMap[b[1]] || b[1],
-        roomName: roomMap[b[2]] || b[2],
+        roomNames: assignedRooms.join(', '),
         bookingDate: bDate,
-        startTime: b[4],
-        endTime: b[5],
-        status: b[6],
-        totalPrice: b[7],
-        paymentStatus: pay.status,
-        paymentMethod: pay.method
+        startTime: b[3],
+        endTime: b[4],
+        status: b[5],
+        totalPrice: b[6],
+        paymentMethod: b[7],
+        paymentStatus: b[8],
+        paymentDate: b[9]
       });
     }
-    return list.reverse(); // เอาล่าสุดขึ้นก่อน
+    return list.reverse();
   } catch (err) {
     return getMockAdminBookings();
   }
 }
 
 /**
- * 8. ฟังก์ชัน Admin: อัปเดตสถานะการชำระเงิน
+ * 8. ฟังก์ชัน Admin: อัปเดตสถานะการชำระเงิน (อัปเดตลงคอลัมน์ PAYMENT_STATUS ใน BOOKING โดยตรง)
  */
 function updatePaymentStatus(bookingCode, newStatus) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const paymentSheet = ss.getSheetByName(SHEET_NAMES.PAYMENT);
-    const data = paymentSheet.getDataRange().getValues();
+    const bookingSheet = ss.getSheetByName(SHEET_NAMES.BOOKING);
+    const data = bookingSheet.getDataRange().getValues();
     
     for (let i = 1; i < data.length; i++) {
-      if (data[i][1] === bookingCode) {
-        paymentSheet.getRange(i + 1, 6).setValue(newStatus);
-        return { success: true, message: 'อัปเดตสถานะเป็น ' + newStatus + ' เรียบร้อย' };
+      if (data[i][0] === bookingCode) {
+        // คอลัมน์ที่ 9 คือ PAYMENT_STATUS (1-based index)
+        bookingSheet.getRange(i + 1, 9).setValue(newStatus);
+        return { success: true, message: 'อัปเดตสถานะการชำระเงินของ ' + bookingCode + ' เป็น ' + newStatus + ' เรียบร้อย' };
       }
     }
     return { success: false, message: 'ไม่พบรายการจองนี้ในระบบ' };
@@ -419,7 +455,7 @@ function updatePaymentStatus(bookingCode, newStatus) {
 }
 
 // ==========================================
-// Mock Data สำรองกรณีไม่ได้เชื่อม Google Sheets
+// Mock Data สำรองกรณีรัน Local Preview
 // ==========================================
 function getMockRooms() {
   return [
@@ -442,8 +478,8 @@ function getMockEquipments() {
 
 function getMockAdminBookings() {
   return [
-    { bookingCode: 'BK20260901', memberInfo: 'ณพัชรกัณฑ์ พัชญ์ชัยพงศา (0812345678)', roomName: 'Brainstorm Studio', bookingDate: '2026-09-21', startTime: '09:00', endTime: '12:00', status: 'Confirmed', totalPrice: 1000, paymentStatus: 'Paid', paymentMethod: 'PromptPay' },
-    { bookingCode: 'BK20260902', memberInfo: 'สมชาย ใจดี (0899998888)', roomName: 'Focus Pod B', bookingDate: '2026-09-21', startTime: '10:00', endTime: '12:00', status: 'Confirmed', totalPrice: 240, paymentStatus: 'Paid', paymentMethod: 'Credit Card' },
-    { bookingCode: 'BK20260903', memberInfo: 'กานต์ ธีรภาพ (0823334444)', roomName: 'Executive Boardroom', bookingDate: '2026-09-21', startTime: '13:00', endTime: '16:00', status: 'Confirmed', totalPrice: 1970, paymentStatus: 'Pending', paymentMethod: 'PromptPay' }
+    { bookingCode: 'BK20260901', memberInfo: 'ณพัชรกัณฑ์ พัชญ์ชัยพงศา (0812345678)', roomNames: 'Brainstorm Studio', bookingDate: '2026-09-21', startTime: '09:00', endTime: '12:00', status: 'Confirmed', totalPrice: 1000, paymentStatus: 'Paid', paymentMethod: 'PromptPay' },
+    { bookingCode: 'BK20260902', memberInfo: 'สมชาย ใจดี (0899998888)', roomNames: 'Focus Pod A, Focus Pod B', bookingDate: '2026-09-21', startTime: '10:00', endTime: '12:00', status: 'Confirmed', totalPrice: 480, paymentStatus: 'Paid', paymentMethod: 'Credit Card' },
+    { bookingCode: 'BK20260903', memberInfo: 'กานต์ ธีรภาพ (0823334444)', roomNames: 'Executive Boardroom', bookingDate: '2026-09-21', startTime: '13:00', endTime: '16:00', status: 'Confirmed', totalPrice: 1970, paymentStatus: 'Pending', paymentMethod: 'PromptPay' }
   ];
 }
