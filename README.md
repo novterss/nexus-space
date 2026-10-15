@@ -284,6 +284,7 @@ nexus-space/
 |---|---|
 | **Course** | CSC362-64 sec02 Database Systems |
 | **Instructor** | อ.สุมนา เกษมสวัสดิ์ (Aj. Sumana Kasemsawat) |
+| **Institution** | มหาวิทยาลัยรังสิต (Rangsit University) |
 | **Semester** | ภาคการศึกษาที่ 1/2569 |
 | **DBMS** | PostgreSQL (Relational Database Management System) |
 
