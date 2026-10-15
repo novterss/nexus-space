@@ -46,28 +46,34 @@
 
 ### 🇹🇭 ภาษาไทย
 
-- 🏠 **แสดงรายการห้องประชุม** พร้อมสถานะว่าง/ไม่ว่าง (สีเขียว/แดง)
-- 📅 **จองห้องออนไลน์** พร้อมเลือกอุปกรณ์เสริม
-- 💰 **คำนวณราคาอัตโนมัติ** แบบ Real-time (ราคาห้อง × ชั่วโมง + ค่าอุปกรณ์)
-- 🔒 **ป้องกันการจองซ้ำซ้อน** (Double Booking Prevention)
-- 📊 **หน้า Admin Dashboard** ตรวจสอบรายการจองและอัปเดตสถานะชำระเงิน
-- 🔍 **ค้นหาประวัติการจอง** ตามเบอร์โทรหรือรหัสสมาชิก
-- 🌙 **Dark / Light Mode** สลับธีมได้
-- 📱 **Responsive Design** รองรับทุกขนาดหน้าจอ
+- 🏛️ **ดีไซน์ระดับองค์กรทางการ (Official Institutional Enterprise UI)** สไตล์ระบบงานราชการ/มหาวิทยาลัยชั้นนำ พร้อมแถบประกาศระเบียบการใช้งาน และนาฬิกา Real-time ICT
+- 📊 **Executive Resource KPI Metrics** สรุปจำนวนห้องทั้งหมด, สถานะพร้อมใช้งาน, ห้องติดภารกิจ, และสต็อกอุปกรณ์เสริม
+- 🗂️ **ระบบสลับมุมมอง 2 รูปแบบ** ทั้งแบบบัตรข้อมูลทางการ (Card View) และตารางสารบบ (Table View) พร้อมระบบค้นหาและกรองตามชั้น/ประเภท
+- 📅 **จองห้องออนไลน์แบบเดี่ยวและหลายห้องพร้อมกัน** (Multi-Room Booking ผ่านตาราง `BOOKING_ROOM`) พร้อมเลือกอุปกรณ์เสริม (`BOOKING_EQUIPMENT`)
+- 💰 **คำนวณราคาอัตโนมัติ** แบบ Real-time ตามระยะเวลาจริง
+- 📑 **พิมพ์ใบยืนยันคำขอและใบเสร็จทางการ (Official Voucher & Receipt)** พร้อม Barcode และ Watermark รับรอง
+- 🔒 **ป้องกันการจองซ้ำซ้อน** (Double Booking & Time Overlap Prevention)
+- 📊 **หน้า Admin Dashboard** ตรวจสอบรายการจอง อนุมัติธุรกรรม และอัปเดตสถานะชำระเงิน
+- 🔍 **ค้นหาประวัติการจอง** ตรวจสอบสิทธิ์ด้วยเบอร์โทรหรือรหัสคำขอ
+- 🌙 **สลับโหมดการแสดงผล** โหมดทางการ (Official Light) และโหมดผู้บริหาร (Executive Dark)
+- 📱 **Responsive Design** รองรับทุกอุปกรณ์ทั้ง Desktop, Tablet และ Mobile
 
 </td>
 <td width="50%">
 
 ### 🇬🇧 English
 
-- 🏠 **Room listing** with real-time availability (green/red status)
-- 📅 **Online booking** with optional equipment add-ons
-- 💰 **Auto price calculation** in real-time (room rate × hours + equipment fees)
-- 🔒 **Double booking prevention** with time overlap validation
-- 📊 **Admin Dashboard** for booking management and payment tracking
-- 🔍 **Booking history search** by phone number or member ID
-- 🌙 **Dark / Light Mode** toggle
-- 📱 **Fully responsive** across all devices
+- 🏛️ **Official Institutional Enterprise UI** modeled after top universities and government portals with real-time ICT clock & announcements
+- 📊 **Executive Resource KPI Metrics** tracking total rooms, real-time availability, occupied rooms, and equipment inventory
+- 🗂️ **Dual Directory View** supporting both structured Card View and Official Table View with multi-attribute filtering
+- 📅 **Single & Multi-Room Online Booking** (Many-to-Many via `BOOKING_ROOM`) with equipment add-ons (`BOOKING_EQUIPMENT`)
+- 💰 **Auto price calculation** in real-time (room rates × hours + equipment fees)
+- 📑 **Official Requisition Voucher & Printable Receipt** with barcode reference and database watermark
+- 🔒 **Double booking prevention** with comprehensive time overlap validation
+- 📊 **Admin Dashboard** for booking management, transaction approvals, and payment status updates
+- 🔍 **Booking history & verification search** by phone number or requisition code
+- 🌙 **Dual Theme System** featuring Official Light Mode and Executive Slate Dark Mode
+- 📱 **Fully responsive** across all modern devices
 
 </td>
 </tr>
