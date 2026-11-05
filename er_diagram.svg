@@ -1,134 +1,165 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 720" width="1150" height="720" style="background:#f8fafc; font-family:'Segoe UI', Tahoma, sans-serif;">
-  <defs>
-    <!-- Table Header Gradients -->
-    <linearGradient id="headerBlue" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#dbeafe" />
-      <stop offset="100%" stop-color="#bfdbfe" />
-    </linearGradient>
-    <linearGradient id="headerAmber" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#fef3c7" />
-      <stop offset="100%" stop-color="#fde68a" />
-    </linearGradient>
-    <filter id="shadow" x="-5%" y="-5%" width="115%" height="115%">
-      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15" />
-    </filter>
-  </defs>
-
-  <!-- Title & Info -->
-  <text x="40" y="32" font-size="18" font-weight="bold" fill="#1e3a8a">ER Diagram: ระบบจองห้องประชุมและ Co-working Space (CSC362)</text>
-  <text x="40" y="52" font-size="12" fill="#64748b">ความสัมพันธ์ระดับฐานข้อมูล Relational Database (1:M / Many-to-Many via Junction Table)</text>
-  <text x="730" y="32" font-size="12" font-weight="bold" fill="#334155">นักศึกษา: ณพัชรกัณฑ์ พัชญ์ชัยพงศา (Naphatcharakan Phatchaiphongsa)</text>
-  <text x="730" y="50" font-size="12" fill="#64748b">วิชา: CSC362-64 sec02</text>
-
-  <!-- Grid Dots Background -->
-  <g opacity="0.3">
-    <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1" fill="#94a3b8" />
-    </pattern>
-    <rect x="20" y="70" width="1110" height="630" fill="url(#dotGrid)" rx="8" stroke="#cbd5e1" />
-  </g>
-
-  <!-- Relationship Lines -->
-  <!-- 1. MEMBER (1) -> BOOKING (M) -->
-  <path d="M 270 140 L 350 140 L 350 170 L 430 170" stroke="#0f172a" stroke-width="2.5" fill="none" />
-  <text x="280" y="133" font-size="15" font-weight="bold" fill="#0f172a">1</text>
-  <text x="405" y="163" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
-
-  <!-- 2. ROOM (1) -> BOOKING (M) -->
-  <path d="M 870 140 L 790 140 L 790 195 L 710 195" stroke="#0f172a" stroke-width="2.5" fill="none" />
-  <text x="850" y="133" font-size="15" font-weight="bold" fill="#0f172a">1</text>
-  <text x="725" y="188" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
-
-  <!-- 3. BOOKING (1) -> BOOKING_EQUIPMENT (M) -->
-  <path d="M 570 380 L 570 450" stroke="#0f172a" stroke-width="2.5" fill="none" />
-  <text x="580" y="405" font-size="15" font-weight="bold" fill="#0f172a">1</text>
-  <text x="580" y="440" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
-
-  <!-- 4. EQUIPMENT (1) -> BOOKING_EQUIPMENT (M) -->
-  <path d="M 270 510 L 350 510 L 350 490 L 430 490" stroke="#0f172a" stroke-width="2.5" fill="none" />
-  <text x="280" y="503" font-size="15" font-weight="bold" fill="#0f172a">1</text>
-  <text x="405" y="483" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
-
-  <!-- 5. BOOKING (1) -> PAYMENT (M) -->
-  <path d="M 680 380 L 680 415 L 870 415 L 870 450" stroke="#0f172a" stroke-width="2.5" fill="none" />
-  <text x="660" y="405" font-size="15" font-weight="bold" fill="#0f172a">1</text>
-  <text x="880" y="440" font-size="18" font-weight="bold" fill="#0f172a">∞</text>
-
-  <!-- 1. TABLE: MEMBER -->
-  <g filter="url(#shadow)" transform="translate(40, 90)">
-    <rect width="230" height="205" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
-    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
-    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">MEMBER</text>
-    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 MEMBER_CODE</text>
-    <text x="12" y="72" font-size="12" fill="#334155">FNAME</text>
-    <text x="12" y="96" font-size="12" fill="#334155">LNAME</text>
-    <text x="12" y="120" font-size="12" fill="#334155">PHONE</text>
-    <text x="12" y="144" font-size="12" fill="#334155">EMAIL</text>
-    <text x="12" y="168" font-size="12" fill="#334155">MEMBER_TYPE</text>
-    <text x="12" y="192" font-size="12" fill="#334155">REGISTER_DATE</text>
-  </g>
-
-  <!-- 2. TABLE: ROOM -->
-  <g filter="url(#shadow)" transform="translate(870, 90)">
-    <rect width="230" height="205" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
-    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
-    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">ROOM</text>
-    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 ROOM_CODE</text>
-    <text x="12" y="72" font-size="12" fill="#334155">ROOM_NAME</text>
-    <text x="12" y="96" font-size="12" fill="#334155">ROOM_TYPE</text>
-    <text x="12" y="120" font-size="12" fill="#334155">CAPACITY</text>
-    <text x="12" y="144" font-size="12" fill="#334155">PRICE_PER_HOUR</text>
-    <text x="12" y="168" font-size="12" fill="#334155">STATUS</text>
-    <text x="12" y="192" font-size="12" fill="#334155">FLOOR</text>
-  </g>
-
-  <!-- 3. TABLE: BOOKING (MAIN JUNCTION) -->
-  <g filter="url(#shadow)" transform="translate(430, 110)">
-    <rect width="280" height="235" rx="5" fill="#ffffff" stroke="#f59e0b" stroke-width="2" />
-    <rect width="280" height="32" rx="4" fill="url(#headerAmber)" />
-    <text x="12" y="21" font-size="14" font-weight="bold" fill="#78350f">BOOKING</text>
-    <text x="12" y="52" font-size="12" font-weight="bold" fill="#d97706">🔑 BOOKING_CODE</text>
-    <text x="12" y="76" font-size="12" font-weight="bold" fill="#2563eb">🔗 MEMBER_CODE (FK)</text>
-    <text x="12" y="100" font-size="12" font-weight="bold" fill="#2563eb">🔗 ROOM_CODE (FK)</text>
-    <text x="12" y="124" font-size="12" fill="#334155">BOOKING_DATE</text>
-    <text x="12" y="148" font-size="12" fill="#334155">START_TIME</text>
-    <text x="12" y="172" font-size="12" fill="#334155">END_TIME</text>
-    <text x="12" y="196" font-size="12" fill="#334155">STATUS</text>
-    <text x="12" y="220" font-size="12" font-weight="bold" fill="#0f172a">TOTAL_PRICE</text>
-  </g>
-
-  <g filter="url(#shadow)" transform="translate(40, 440)">
-    <rect width="230" height="170" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
-    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
-    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">EQUIPMENT</text>
-    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 EQUIPMENT_CODE</text>
-    <text x="12" y="72" font-size="12" fill="#334155">EQUIPMENT_NAME</text>
-    <text x="12" y="96" font-size="12" fill="#334155">QTY</text>
-    <text x="12" y="120" font-size="12" fill="#334155">STATUS</text>
-    <text x="12" y="144" font-size="12" fill="#334155">PRICE</text>
-  </g>
-
-  <!-- 5. TABLE: BOOKING_EQUIPMENT (JUNCTION TABLE) -->
-  <g filter="url(#shadow)" transform="translate(430, 440)">
-    <rect width="280" height="130" rx="5" fill="#ffffff" stroke="#f59e0b" stroke-width="2" />
-    <rect width="280" height="32" rx="4" fill="url(#headerAmber)" />
-    <text x="12" y="21" font-size="13" font-weight="bold" fill="#78350f">BOOKING_EQUIPMENT (Junction M:M)</text>
-    <text x="12" y="52" font-size="12" font-weight="bold" fill="#d97706">🔑 BOOKING_CODE (PK, FK)</text>
-    <text x="12" y="76" font-size="12" font-weight="bold" fill="#d97706">🔑 EQUIPMENT_CODE (PK, FK)</text>
-    <text x="12" y="100" font-size="12" fill="#334155">QTY_USED</text>
-  </g>
-
-  <!-- 6. TABLE: PAYMENT -->
-  <g filter="url(#shadow)" transform="translate(870, 440)">
-    <rect width="230" height="175" rx="5" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" />
-    <rect width="230" height="30" rx="4" fill="url(#headerBlue)" />
-    <text x="12" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">PAYMENT</text>
-    <text x="12" y="48" font-size="12" font-weight="bold" fill="#d97706">🔑 PAYMENT_CODE</text>
-    <text x="12" y="72" font-size="12" font-weight="bold" fill="#2563eb">🔗 BOOKING_CODE (FK)</text>
-    <text x="12" y="96" font-size="12" fill="#334155">PAYMENT_DATE</text>
-    <text x="12" y="120" font-size="12" fill="#334155">AMOUNT</text>
-    <text x="12" y="144" font-size="12" fill="#334155">METHOD</text>
-    <text x="12" y="168" font-size="12" fill="#334155">STATUS</text>
-  </g>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 720" width="1150" height="720" font-family="'IBM Plex Sans Thai', 'Segoe UI', Tahoma, sans-serif">
+<rect width="100%" height="100%" fill="#f4f2ed"/>
+<defs><filter id="sh" x="-5%" y="-5%" width="115%" height="120%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#1a1917" flood-opacity="0.12"/></filter></defs>
+<text x="40" y="40" font-size="20" font-weight="700" fill="#1a1917">ER Diagram — NEXUS SPACE: ระบบจองห้องประชุมและ Co-working Space</text>
+<text x="40" y="64" font-size="12.5" fill="#4b4840">PostgreSQL 3NF · 6 ตาราง · ยุบ PAYMENT รวมใน BOOKING · BOOKING_ROOM / BOOKING_EQUIPMENT เป็นตารางเชื่อม M:M (Composite PK)</text>
+<text x="1110" y="40" font-size="12" font-weight="600" fill="#1a1917" text-anchor="end">CSC362-64 sec02 · มหาวิทยาลัยรังสิต</text>
+<text x="1110" y="58" font-size="12" fill="#4b4840" text-anchor="end">ณพัชรกัณฑ์ พัชญ์ชัยพงศา</text>
+<path d="M290,152.0 H345 V176.0 H400" fill="none" stroke="#87837a" stroke-width="1.8"/>
+<text x="300" y="146.0" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">1</text>
+<text x="388" y="170.0" font-size="13" font-weight="700" fill="#e4531f" text-anchor="end">M</text>
+<path d="M700,152.0 H820" fill="none" stroke="#87837a" stroke-width="1.8"/>
+<text x="710" y="146.0" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">1</text>
+<text x="808" y="146.0" font-size="13" font-weight="700" fill="#e4531f" text-anchor="end">M</text>
+<path d="M965,196 V290" fill="none" stroke="#87837a" stroke-width="1.8"/>
+<text x="975" y="212" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">M</text>
+<text x="975" y="284" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">1</text>
+<path d="M550,388 V480" fill="none" stroke="#87837a" stroke-width="1.8"/>
+<text x="560" y="404" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">1</text>
+<text x="560" y="474" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">M</text>
+<path d="M290,532.0 H345 V556.0 H400" fill="none" stroke="#87837a" stroke-width="1.8"/>
+<text x="300" y="526.0" font-size="13" font-weight="700" fill="#e4531f" text-anchor="start">1</text>
+<text x="388" y="550.0" font-size="13" font-weight="700" fill="#e4531f" text-anchor="end">M</text>
+<g filter="url(#sh)"><rect x="40" y="100" width="250" height="216" rx="12" fill="#ffffff" stroke="#1a1917" stroke-width="1.5"/></g>
+<path d="M40,112 a12,12 0 0 1 12,-12 h226 a12,12 0 0 1 12,12 v22 h-250 z" fill="#1a1917"/>
+<text x="54" y="122" font-size="14" font-weight="700" fill="#ffffff" font-family="'IBM Plex Mono', Consolas, monospace">MEMBER</text>
+<text x="54" y="156" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK</text>
+<text x="98" y="156" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">MEMBER_CODE</text>
+<text x="276" y="156" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="50" x2="280" y1="164" y2="164" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="180" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">FNAME</text>
+<text x="276" y="180" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(50)</text>
+<line x1="50" x2="280" y1="188" y2="188" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="204" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">LNAME</text>
+<text x="276" y="204" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(50)</text>
+<line x1="50" x2="280" y1="212" y2="212" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="54" y="228" font-size="9.5" font-weight="700" fill="#87837a" font-family="'IBM Plex Mono', Consolas, monospace">UQ</text>
+<text x="98" y="228" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">PHONE</text>
+<text x="276" y="228" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="50" x2="280" y1="236" y2="236" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="54" y="252" font-size="9.5" font-weight="700" fill="#87837a" font-family="'IBM Plex Mono', Consolas, monospace">UQ</text>
+<text x="98" y="252" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">EMAIL</text>
+<text x="276" y="252" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(100)</text>
+<line x1="50" x2="280" y1="260" y2="260" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="276" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">MEMBER_TYPE</text>
+<text x="276" y="276" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="50" x2="280" y1="284" y2="284" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="300" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">REGISTER_DATE</text>
+<text x="276" y="300" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">DATE</text>
+<g filter="url(#sh)"><rect x="400" y="100" width="300" height="288" rx="12" fill="#ffffff" stroke="#e4531f" stroke-width="1.5"/></g>
+<path d="M400,112 a12,12 0 0 1 12,-12 h276 a12,12 0 0 1 12,12 v22 h-300 z" fill="#e4531f"/>
+<text x="414" y="122" font-size="14" font-weight="700" fill="#ffffff" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING</text>
+<text x="414" y="156" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK</text>
+<text x="458" y="156" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING_CODE</text>
+<text x="686" y="156" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="410" x2="690" y1="164" y2="164" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="414" y="180" font-size="9.5" font-weight="700" fill="#2456c7" font-family="'IBM Plex Mono', Consolas, monospace">FK</text>
+<text x="458" y="180" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">MEMBER_CODE</text>
+<text x="686" y="180" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="410" x2="690" y1="188" y2="188" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="458" y="204" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING_DATE</text>
+<text x="686" y="204" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">DATE</text>
+<line x1="410" x2="690" y1="212" y2="212" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="458" y="228" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">START_TIME</text>
+<text x="686" y="228" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">TIME</text>
+<line x1="410" x2="690" y1="236" y2="236" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="458" y="252" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">END_TIME</text>
+<text x="686" y="252" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">TIME</text>
+<line x1="410" x2="690" y1="260" y2="260" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="458" y="276" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">STATUS</text>
+<text x="686" y="276" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="410" x2="690" y1="284" y2="284" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="458" y="300" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">TOTAL_PRICE</text>
+<text x="686" y="300" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">DECIMAL(10,2)</text>
+<line x1="410" x2="690" y1="308" y2="308" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="414" y="324" font-size="9.5" font-weight="700" fill="#157a3c" font-family="'IBM Plex Mono', Consolas, monospace">PAY</text>
+<text x="458" y="324" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">PAYMENT_METHOD</text>
+<text x="686" y="324" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(30)</text>
+<line x1="410" x2="690" y1="332" y2="332" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="414" y="348" font-size="9.5" font-weight="700" fill="#157a3c" font-family="'IBM Plex Mono', Consolas, monospace">PAY</text>
+<text x="458" y="348" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">PAYMENT_STATUS</text>
+<text x="686" y="348" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="410" x2="690" y1="356" y2="356" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="414" y="372" font-size="9.5" font-weight="700" fill="#157a3c" font-family="'IBM Plex Mono', Consolas, monospace">PAY</text>
+<text x="458" y="372" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">PAYMENT_DATE</text>
+<text x="686" y="372" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">TIMESTAMP</text>
+<g filter="url(#sh)"><rect x="820" y="100" width="290" height="96" rx="12" fill="#ffffff" stroke="#e4531f" stroke-width="1.5" stroke-dasharray="6 4"/></g>
+<path d="M820,112 a12,12 0 0 1 12,-12 h266 a12,12 0 0 1 12,12 v22 h-290 z" fill="#fcebe3"/>
+<text x="834" y="122" font-size="14" font-weight="700" fill="#c44312" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING_ROOM</text>
+<text x="834" y="156" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK·FK</text>
+<text x="878" y="156" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING_CODE</text>
+<text x="1096" y="156" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="830" x2="1100" y1="164" y2="164" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="834" y="180" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK·FK</text>
+<text x="878" y="180" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">ROOM_CODE</text>
+<text x="1096" y="180" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<g filter="url(#sh)"><rect x="820" y="290" width="290" height="216" rx="12" fill="#ffffff" stroke="#1a1917" stroke-width="1.5"/></g>
+<path d="M820,302 a12,12 0 0 1 12,-12 h266 a12,12 0 0 1 12,12 v22 h-290 z" fill="#1a1917"/>
+<text x="834" y="312" font-size="14" font-weight="700" fill="#ffffff" font-family="'IBM Plex Mono', Consolas, monospace">ROOM</text>
+<text x="834" y="346" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK</text>
+<text x="878" y="346" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">ROOM_CODE</text>
+<text x="1096" y="346" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="830" x2="1100" y1="354" y2="354" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="878" y="370" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">ROOM_NAME</text>
+<text x="1096" y="370" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(100)</text>
+<line x1="830" x2="1100" y1="378" y2="378" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="878" y="394" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">ROOM_TYPE</text>
+<text x="1096" y="394" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(50)</text>
+<line x1="830" x2="1100" y1="402" y2="402" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="878" y="418" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">CAPACITY</text>
+<text x="1096" y="418" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">INT</text>
+<line x1="830" x2="1100" y1="426" y2="426" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="878" y="442" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">PRICE_PER_HOUR</text>
+<text x="1096" y="442" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">DECIMAL(10,2)</text>
+<line x1="830" x2="1100" y1="450" y2="450" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="878" y="466" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">STATUS</text>
+<text x="1096" y="466" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="830" x2="1100" y1="474" y2="474" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="878" y="490" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">FLOOR</text>
+<text x="1096" y="490" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">INT</text>
+<g filter="url(#sh)"><rect x="400" y="480" width="300" height="120" rx="12" fill="#ffffff" stroke="#e4531f" stroke-width="1.5" stroke-dasharray="6 4"/></g>
+<path d="M400,492 a12,12 0 0 1 12,-12 h276 a12,12 0 0 1 12,12 v22 h-300 z" fill="#fcebe3"/>
+<text x="414" y="502" font-size="14" font-weight="700" fill="#c44312" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING_EQUIPMENT</text>
+<text x="414" y="536" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK·FK</text>
+<text x="458" y="536" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">BOOKING_CODE</text>
+<text x="686" y="536" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="410" x2="690" y1="544" y2="544" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="414" y="560" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK·FK</text>
+<text x="458" y="560" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">EQUIPMENT_CODE</text>
+<text x="686" y="560" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="410" x2="690" y1="568" y2="568" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="458" y="584" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">QTY_USED</text>
+<text x="686" y="584" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">INT</text>
+<g filter="url(#sh)"><rect x="40" y="480" width="250" height="168" rx="12" fill="#ffffff" stroke="#1a1917" stroke-width="1.5"/></g>
+<path d="M40,492 a12,12 0 0 1 12,-12 h226 a12,12 0 0 1 12,12 v22 h-250 z" fill="#1a1917"/>
+<text x="54" y="502" font-size="14" font-weight="700" fill="#ffffff" font-family="'IBM Plex Mono', Consolas, monospace">EQUIPMENT</text>
+<text x="54" y="536" font-size="9.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK</text>
+<text x="98" y="536" font-size="12.5" font-weight="700" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">EQUIPMENT_CODE</text>
+<text x="276" y="536" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="50" x2="280" y1="544" y2="544" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="560" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">EQUIPMENT_NAME</text>
+<text x="276" y="560" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(100)</text>
+<line x1="50" x2="280" y1="568" y2="568" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="584" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">QTY</text>
+<text x="276" y="584" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">INT</text>
+<line x1="50" x2="280" y1="592" y2="592" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="608" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">STATUS</text>
+<text x="276" y="608" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">VARCHAR(20)</text>
+<line x1="50" x2="280" y1="616" y2="616" stroke="#e7e3da" stroke-dasharray="3 3"/>
+<text x="98" y="632" font-size="12.5" font-weight="500" fill="#1a1917" font-family="'IBM Plex Mono', Consolas, monospace">PRICE</text>
+<text x="276" y="632" font-size="11" fill="#87837a" text-anchor="end" font-family="'IBM Plex Mono', Consolas, monospace">DECIMAL(10,2)</text>
+<rect x="760" y="540" width="350" height="140" rx="12" fill="#ffffff" stroke="#d3cec2"/>
+<text x="776" y="566" font-size="13" font-weight="700" fill="#1a1917">คำอธิบายสัญลักษณ์</text>
+<text x="776" y="590" font-size="10.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK</text>
+<text x="832" y="590" font-size="11.5" fill="#4b4840">Primary Key</text>
+<text x="776" y="605" font-size="10.5" font-weight="700" fill="#2456c7" font-family="'IBM Plex Mono', Consolas, monospace">FK</text>
+<text x="832" y="605" font-size="11.5" fill="#4b4840">Foreign Key</text>
+<text x="776" y="620" font-size="10.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">PK·FK</text>
+<text x="832" y="620" font-size="11.5" fill="#4b4840">Composite PK ที่เป็น FK (ตารางเชื่อม)</text>
+<text x="776" y="635" font-size="10.5" font-weight="700" fill="#87837a" font-family="'IBM Plex Mono', Consolas, monospace">UQ</text>
+<text x="832" y="635" font-size="11.5" fill="#4b4840">UNIQUE NOT NULL</text>
+<text x="776" y="650" font-size="10.5" font-weight="700" fill="#157a3c" font-family="'IBM Plex Mono', Consolas, monospace">PAY</text>
+<text x="832" y="650" font-size="11.5" fill="#4b4840">ฟิลด์ชำระเงินที่ยุบรวมจาก PAYMENT</text>
+<text x="776" y="665" font-size="10.5" font-weight="700" fill="#e4531f" font-family="'IBM Plex Mono', Consolas, monospace">1 — M</text>
+<text x="832" y="665" font-size="11.5" fill="#4b4840">ความสัมพันธ์หนึ่งต่อหลาย</text>
 </svg>

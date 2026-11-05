@@ -32,3 +32,8 @@ GITHUB_SETUP_AND_DEPLOY.md
 PORTFOLIO_PROFILE_TEMPLATE.md
 er_diagram_access_style.html
 
+
+# Local tooling / secrets
+.claude/
+.env
+.env.*

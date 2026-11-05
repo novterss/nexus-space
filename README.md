@@ -7,315 +7,177 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 [![Google Apps Script](https://img.shields.io/badge/Apps_Script-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://developers.google.com/apps-script)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-<br>
+**ระบบจองห้องประชุมแบบครบวงจร ออกแบบฐานข้อมูล 6 ตารางตามหลัก 3NF บน PostgreSQL**
 
-**A full-stack meeting room booking system built with PostgreSQL, JavaScript, and modern web technologies.**
-
-**ระบบจองห้องประชุมแบบครบวงจร พัฒนาด้วย PostgreSQL และเทคโนโลยีเว็บสมัยใหม่**
-
-<br>
-
-[🌐 Live Demo](https://nexus-space-six.vercel.app) · [📄 Documentation](#-documentation) · [🗂️ Database Schema](#-database-schema)
+[🌐 Live Demo](https://nexus-space-six.vercel.app) · [🗂️ Database](docs/DATABASE.md) · [🎤 Demo Guide](docs/DEMO_GUIDE.md) · [📝 Changelog](CHANGELOG.md)
 
 </div>
 
 ---
 
-## 📋 Table of Contents | สารบัญ
+## ✨ ฟีเจอร์หลัก
 
-- [✨ Features | ฟีเจอร์หลัก](#-features--ฟีเจอร์หลัก)
-- [🖥️ Screenshots | ภาพหน้าจอ](#️-screenshots--ภาพหน้าจอ)
-- [🗂️ Database Schema](#️-database-schema)
-- [🏗️ Architecture | สถาปัตยกรรมระบบ](#️-architecture--สถาปัตยกรรมระบบ)
-- [🚀 Getting Started | เริ่มต้นใช้งาน](#-getting-started--เริ่มต้นใช้งาน)
-- [📁 Project Structure | โครงสร้างโปรเจค](#-project-structure--โครงสร้างโปรเจค)
-- [📖 Documentation](#-documentation)
-- [👨‍💻 Author | ผู้พัฒนา](#-author--ผู้พัฒนา)
-
----
-
-## ✨ Features | ฟีเจอร์หลัก
-
-<table>
-<tr>
-<td width="50%">
-
-### 🇹🇭 ภาษาไทย
-
-- 🏛️ **ดีไซน์ระดับองค์กรทางการ (Official Institutional Enterprise UI)** สไตล์ระบบงานราชการ/มหาวิทยาลัยชั้นนำ พร้อมแถบประกาศระเบียบการใช้งาน และนาฬิกา Real-time ICT
-- 📊 **Executive Resource KPI Metrics** สรุปจำนวนห้องทั้งหมด, สถานะพร้อมใช้งาน, ห้องติดภารกิจ, และสต็อกอุปกรณ์เสริม
-- 🗂️ **ระบบสลับมุมมอง 2 รูปแบบ** ทั้งแบบบัตรข้อมูลทางการ (Card View) และตารางสารบบ (Table View) พร้อมระบบค้นหาและกรองตามชั้น/ประเภท
-- 📅 **จองห้องออนไลน์แบบเดี่ยวและหลายห้องพร้อมกัน** (Multi-Room Booking ผ่านตาราง `BOOKING_ROOM`) พร้อมเลือกอุปกรณ์เสริม (`BOOKING_EQUIPMENT`)
-- 💰 **คำนวณราคาอัตโนมัติ** แบบ Real-time ตามระยะเวลาจริง
-- 📑 **พิมพ์ใบยืนยันคำขอและใบเสร็จทางการ (Official Voucher & Receipt)** พร้อม Barcode และ Watermark รับรอง
-- 🔒 **ป้องกันการจองซ้ำซ้อน** (Double Booking & Time Overlap Prevention)
-- 📊 **หน้า Admin Dashboard** ตรวจสอบรายการจอง อนุมัติธุรกรรม และอัปเดตสถานะชำระเงิน
-- 🔍 **ค้นหาประวัติการจอง** ตรวจสอบสิทธิ์ด้วยเบอร์โทรหรือรหัสคำขอ
-- 🌙 **สลับโหมดการแสดงผล** โหมดทางการ (Official Light) และโหมดผู้บริหาร (Executive Dark)
-- 📱 **Responsive Design** รองรับทุกอุปกรณ์ทั้ง Desktop, Tablet และ Mobile
-
-</td>
-<td width="50%">
-
-### 🇬🇧 English
-
-- 🏛️ **Official Institutional Enterprise UI** modeled after top universities and government portals with real-time ICT clock & announcements
-- 📊 **Executive Resource KPI Metrics** tracking total rooms, real-time availability, occupied rooms, and equipment inventory
-- 🗂️ **Dual Directory View** supporting both structured Card View and Official Table View with multi-attribute filtering
-- 📅 **Single & Multi-Room Online Booking** (Many-to-Many via `BOOKING_ROOM`) with equipment add-ons (`BOOKING_EQUIPMENT`)
-- 💰 **Auto price calculation** in real-time (room rates × hours + equipment fees)
-- 📑 **Official Requisition Voucher & Printable Receipt** with barcode reference and database watermark
-- 🔒 **Double booking prevention** with comprehensive time overlap validation
-- 📊 **Admin Dashboard** for booking management, transaction approvals, and payment status updates
-- 🔍 **Booking history & verification search** by phone number or requisition code
-- 🌙 **Dual Theme System** featuring Official Light Mode and Executive Slate Dark Mode
-- 📱 **Fully responsive** across all modern devices
-
-</td>
-</tr>
-</table>
+| | ฟีเจอร์ | ตารางที่เกี่ยวข้อง |
+|---|---|---|
+| 📅 | **ตารางการใช้ห้องรายวัน (Timeline)** แสดงทุกห้อง × ทุกชั่วโมง เห็นช่วงที่ถูกจองทันที คลิกช่องว่างเพื่อเลือกห้อง/เวลา | `ROOM`, `BOOKING`, `BOOKING_ROOM` |
+| 🧩 | **จองหลายห้องในบิลเดียว** (Many-to-Many) | `BOOKING_ROOM` |
+| 🎛️ | **เลือกอุปกรณ์เสริมพร้อมจำนวน** ตรวจสต็อกคงเหลือในช่วงเวลาเดียวกัน | `EQUIPMENT`, `BOOKING_EQUIPMENT.QTY_USED` |
+| 🔒 | **ป้องกันการจองซ้อนทับ** ทุกห้องที่เลือก + `CHECK (END_TIME > START_TIME)` + ห้ามจองย้อนหลัง | `BOOKING` |
+| 👤 | **สมาชิกเดิม/ใหม่อัตโนมัติ** ใช้เบอร์โทรเดิม (`PHONE UNIQUE`) ตรวจอีเมลซ้ำ (`EMAIL UNIQUE`) สร้างรหัส `M005, M006, …` | `MEMBER` |
+| 💰 | **คำนวณราคาอัตโนมัติ** `ชั่วโมง × Σ ราคาห้อง + Σ (ราคาอุปกรณ์ × จำนวน)` คำนวณซ้ำฝั่งเซิร์ฟเวอร์ | `BOOKING.TOTAL_PRICE` |
+| 💳 | **ชำระเงินรวมในใบจอง** PromptPay/Credit Card = `Paid` ทันที, Bank Transfer/Cash = `Pending` | `BOOKING.PAYMENT_*` |
+| 🎫 | **ใบยืนยันการจอง (Voucher)** พร้อมสถานะ พิมพ์ได้เฉพาะใบยืนยัน | — |
+| 🔍 | **ค้นหาประวัติ** ด้วยเบอร์โทร / อีเมล / รหัสสมาชิก / เลขที่ใบจอง | `MEMBER` ⟶ `BOOKING` |
+| 🛡️ | **หน้าผู้ดูแลระบบ** ปรับ `STATUS` และ `PAYMENT_STATUS` ได้ครบทุกค่าตาม CHECK constraint | `BOOKING` |
+| 🗄️ | **หน้าพจนานุกรมข้อมูล** แสดงทุกคอลัมน์/ชนิดข้อมูล/Constraint/FK ตรงกับ SQL | ทั้ง 6 ตาราง |
+| 🌙 | **โหมดสว่าง/มืด** และ **Responsive** ใช้งานได้ตั้งแต่มือถือถึงจอใหญ่ | — |
 
 ---
 
-## 🖥️ Screenshots | ภาพหน้าจอ
+## 🗃️ ER Diagram
 
 <div align="center">
-
-### 🗃️ ER Diagram | แผนภาพความสัมพันธ์ (Relational Database)
 
 ![ER Diagram](er_diagram.svg)
 
 </div>
 
----
+### ความสัมพันธ์
 
-## 🗂️ Database Schema
+| Parent | Child | Cardinality | Constraint | ON DELETE |
+|---|---|---|---|---|
+| `MEMBER` | `BOOKING` | 1 : M | `FK_BOOKING_MEMBER` | RESTRICT |
+| `BOOKING` | `BOOKING_ROOM` | 1 : M | `FK_BR_BOOKING` | CASCADE |
+| `ROOM` | `BOOKING_ROOM` | 1 : M | `FK_BR_ROOM` | RESTRICT |
+| `BOOKING` | `BOOKING_EQUIPMENT` | 1 : M | `FK_BE_BOOKING` | CASCADE |
+| `EQUIPMENT` | `BOOKING_EQUIPMENT` | 1 : M | `FK_BE_EQUIPMENT` | RESTRICT |
 
-ระบบฐานข้อมูลประกอบด้วย **6 ตาราง** ออกแบบตามหลัก **Normalization (3NF)** บน **PostgreSQL** ปรับปรุงตามคำแนะนำของอาจารย์:
+### จุดเด่นของการออกแบบ (ปรับตามคำแนะนำอาจารย์)
 
-```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────────┐     ┌──────────────┐
-│   MEMBER     │     │     BOOKING      │     │   BOOKING_ROOM   │     │     ROOM     │
-├──────────────┤     ├──────────────────┤     ├──────────────────┤     ├──────────────┤
-│🔑 MEMBER_CODE│────▶│🔑 BOOKING_CODE   │────▶│🔑🔗BOOKING_CODE  │◀────│🔑 ROOM_CODE  │
-│  FNAME       │ 1:M │🔗 MEMBER_CODE(FK)│ 1:M │🔑🔗ROOM_CODE     │ M:1 │  ROOM_NAME   │
-│  LNAME       │     │  BOOKING_DATE    │     └──────────────────┘     │  ROOM_TYPE   │
-│  PHONE       │     │  START_TIME      │           (หลายห้อง)          │  CAPACITY    │
-│  EMAIL       │     │  END_TIME        │                              │  PRICE/HOUR  │
-│  MEMBER_TYPE │     │  STATUS          │                              │  STATUS      │
-│  REGISTER_DT │     │  TOTAL_PRICE     │                              │  FLOOR       │
-└──────────────┘     │💳PAYMENT_METHOD  │                              └──────────────┘
-                     │💳PAYMENT_STATUS  │
-                     │💳PAYMENT_DATE    │
-                     └────────┬─────────┘
-                              │
-                     ┌────────▼────────┐
-                     │BOOKING_EQUIPMENT│
-                     ├─────────────────┤
-                     │🔑🔗BOOKING_CODE │
-                     │🔑🔗EQUIPMENT_CD │
-                     │  QTY_USED       │
-                     └────────┬────────┘
-                              │ M:1
-                     ┌────────▼────────┐
-                     │   EQUIPMENT     │
-                     ├─────────────────┤
-                     │🔑 EQUIPMENT_CODE│
-                     │  EQUIPMENT_NAME │
-                     │  QTY            │
-                     │  STATUS         │
-                     │  PRICE          │
-                     └─────────────────┘
-```
+| Concept | คำอธิบาย |
+|---|---|
+| **Merged Payment** | ยุบตาราง `PAYMENT` รวมเข้า `BOOKING` (`PAYMENT_METHOD`, `PAYMENT_STATUS`, `PAYMENT_DATE`) ลดความสัมพันธ์ 1:1 ที่ไม่จำเป็น |
+| **Multi-room (M:N)** | เพิ่ม `BOOKING_ROOM` เป็นตารางเชื่อม ให้ 1 ใบจองมีได้หลายห้อง |
+| **Composite PK** | `BOOKING_ROOM (BOOKING_CODE, ROOM_CODE)` และ `BOOKING_EQUIPMENT (BOOKING_CODE, EQUIPMENT_CODE)` กันข้อมูลซ้ำในใบจองเดียว |
+| **Historical price** | เก็บ `TOTAL_PRICE` ณ วันจอง ราคาไม่เปลี่ยนตามราคาห้องในอนาคต |
 
-### Key Design Decisions | จุดเด่นของการออกแบบ
-
-| Concept | Description (EN) | คำอธิบาย (TH) |
-|---|---|---|
-| **Merged Payment** | Payment fields integrated into `BOOKING` to prevent 1:1 Over-normalization | ยุบตารางชำระเงินรวมเข้าใน BOOKING ลดความซ้ำซ้อน 1:1 ตามคำแนะนำอาจารย์ |
-| **Multi-room (M:N)** | `BOOKING_ROOM` resolves Many-to-Many between BOOKING ↔ ROOM | รองรับการจองได้หลายห้องพร้อมกันในบิลเดียวผ่านตารางเชื่อม Composite PK |
-| **Composite PKs** | `BOOKING_ROOM` & `BOOKING_EQUIPMENT` use composite primary keys | ใช้ Primary Key คู่ป้องกันการบันทึกห้องซ้ำหรืออุปกรณ์ซ้ำในใบจองเดิม |
-| **TOTAL_PRICE** | Stored in BOOKING to preserve historical pricing (price-at-time-of-booking) | เก็บราคาจริง ณ วันจอง ไม่เปลี่ยนตามราคาปัจจุบัน |
-| **Time Overlap** | SQL constraint `CHECK (END_TIME > START_TIME)` + multi-room overlap validation | ป้องกันจองเวลาซ้ำซ้อนทุกห้องที่เลือก ทั้ง DB Level และ App Level |
+รายละเอียดทุกคอลัมน์ ตัวอย่าง SQL Query และเหตุผลด้าน Normalization: **[docs/DATABASE.md](docs/DATABASE.md)**
 
 ---
 
-## 🏗️ Architecture | สถาปัตยกรรมระบบ
+## 🏗️ Architecture
 
 ```mermaid
-graph TB
-    subgraph Frontend
-        A[index.html<br>HTML5 + CSS3 + JS]
-    end
-    
-    subgraph Backend Options
-        B[Google Apps Script<br>Code.gs]
-        C[Vercel<br>Static Hosting]
-    end
-    
-    subgraph Database
-        D[(PostgreSQL<br>6 Tables)]
-        E[(Google Sheets<br>Cloud DB)]
-    end
-    
-    A -->|google.script.run| B
-    A -->|Static Deploy| C
-    B -->|Read/Write| E
-    D -.->|Schema Design| E
-    
-    style A fill:#3b82f6,color:#fff
-    style B fill:#f59e0b,color:#fff
-    style C fill:#000,color:#fff
-    style D fill:#4169e1,color:#fff
-    style E fill:#0f9d58,color:#fff
+graph LR
+    A[index.html<br>HTML + CSS + JS] -->|google.script.run| B[Code.gs<br>Apps Script]
+    B -->|Read / Write| C[(Google Sheets<br>6 ชีต = 6 ตาราง)]
+    A -.->|เปิดไฟล์ตรง / Vercel| D[Local Preview<br>ฐานข้อมูลจำลองในหน้าเว็บ]
+    E[(PostgreSQL<br>database_schema.sql)] -.->|Schema ต้นแบบ| C
+    E -.->|Seed Data ชุดเดียวกัน| D
 ```
 
-### Tech Stack
-
-| Layer | Technology | Purpose |
-|---|---|---|
-| **Frontend** | HTML5, CSS3, JavaScript | User Interface & UX |
-| **Backend** | Google Apps Script | Server-side logic & API |
-| **Database** | PostgreSQL | Relational database schema |
-| **Cloud DB** | Google Sheets | Runtime data storage |
-| **Hosting** | Vercel | Static site deployment |
-| **Design** | Glassmorphism, CSS Variables | Modern UI/UX |
+- **โหมด Local Preview** (เปิดไฟล์ตรงหรือ Vercel) — หน้าเว็บมีฐานข้อมูลจำลอง 6 ตารางพร้อม Seed Data ชุดเดียวกับ `database_schema.sql` และกฎตรวจสอบเหมือนเซิร์ฟเวอร์ทุกข้อ (ข้อมูลหายเมื่อรีเฟรช)
+- **โหมด Apps Script** — ข้อมูลถาวรใน Google Sheets ผ่าน `Code.gs` (ชื่อฟังก์ชันและรูปแบบผลลัพธ์เหมือนกันทุกตัว)
 
 ---
 
-## 🚀 Getting Started | เริ่มต้นใช้งาน
+## 🚀 Getting Started
 
-### Option 1: Open Locally | เปิดในเครื่อง (ง่ายสุด)
+### 1) เปิดในเครื่อง (ง่ายที่สุด)
 
 ```bash
-# Clone the repository
-git clone https://github.com/novterss/nexus-space.git
-
-# Open in browser (no server needed!)
-# เปิดในเบราว์เซอร์ (ไม่ต้องลง server!)
-open index.html
+git clone https://github.com/Novterss/nexus-space.git
+cd nexus-space
+npx serve .
 ```
 
-> 💡 **ไฟล์ `index.html` มี Mock Data ในตัว** เปิดดับเบิ้ลคลิกได้เลยโดยไม่ต้องลง dependencies ใดๆ
+หรือดับเบิลคลิก `index.html` ได้เลย ไม่ต้องติดตั้งอะไรเพิ่ม
 
-### Option 2: Deploy on Vercel | Deploy ขึ้น Vercel
+### 2) Google Apps Script (ข้อมูลถาวร)
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+1. สร้าง Google Spreadsheet ใหม่ → **Extensions › Apps Script**
+2. วางโค้ด `Code.gs` → เลือกฟังก์ชัน `initDatabase` แล้วกด **Run** (สร้าง 6 ชีตพร้อม Seed Data)
+3. สร้างไฟล์ HTML ชื่อ `index` แล้ววางโค้ดจาก `index.html`
+4. **Deploy › New deployment › Web app** → เปิดลิงก์ใช้งาน
 
-# Deploy
-vercel --prod
-```
-
-### Option 3: Google Apps Script (Full Backend)
-
-1. สร้าง Google Spreadsheet ใหม่
-2. ไปที่ **Extensions > Apps Script**
-3. วางโค้ด `Code.gs` → Run ฟังก์ชัน `initDatabase()`
-4. สร้างไฟล์ `index.html` ใน Apps Script Editor
-5. Deploy as **Web App** → เปิดลิงก์ใช้งานได้ทันที
-
-### PostgreSQL Setup (Schema Only)
+### 3) PostgreSQL (Schema + Seed Data)
 
 ```bash
-# Import schema to PostgreSQL via DBeaver or psql
 psql -U postgres -d your_database -f database_schema.sql
 ```
 
+### 4) Deploy บน Vercel
+
+```bash
+npx vercel --prod
+```
+
 ---
 
-## 📁 Project Structure | โครงสร้างโปรเจค
+## 📁 Project Structure
 
 ```
 nexus-space/
-├── 📄 index.html                    # Main web application (Frontend)
-├── 📄 Code.gs                       # Google Apps Script backend
-├── 📄 database_schema.sql           # PostgreSQL DDL + Seed Data
-├── 📄 er_diagram.svg                # ER Diagram vector graphic
-├── 📄 vercel.json                   # Vercel deployment config
-├── 📄 package.json                  # Project metadata
-├── 📄 LICENSE                       # MIT License
-└── 📄 README.md                     # This file
+├── index.html            # Web application (UI + Local Preview DB)
+├── Code.gs               # Google Apps Script backend (Google Sheets)
+├── database_schema.sql   # PostgreSQL DDL + Seed Data (ต้นฉบับของ ERD)
+├── er_diagram.svg        # ER Diagram
+├── docs/
+│   ├── DATABASE.md       # Data dictionary, ความสัมพันธ์, Normalization, ตัวอย่าง SQL
+│   └── DEMO_GUIDE.md     # ลำดับการสาธิตสำหรับนำเสนอ + Test cases
+├── CHANGELOG.md          # ประวัติการแก้ไข
+├── vercel.json           # Vercel config
+├── package.json          # Project metadata
+└── LICENSE               # MIT License
 ```
 
 ---
 
-## 📖 Documentation
+## 📖 Seed Data
 
-### Database Tables Summary
-
-| # | Table | Records | Description |
+| # | Table | Rows | Description |
 |---|---|---|---|
-| 1 | `MEMBER` | 4 | ข้อมูลสมาชิกผู้ใช้งาน (Members) |
-| 2 | `ROOM` | 5 | ห้องประชุมและพื้นที่ทำงาน (Rooms) |
-| 3 | `EQUIPMENT` | 4 | อุปกรณ์เสริมให้บริการ (Equipment) |
-| 4 | `BOOKING` | 3 | การจองห้องประชุม (Bookings) |
-| 5 | `BOOKING_EQUIPMENT` | 5 | ตารางเชื่อม M:M (Junction Table) |
-| 6 | `PAYMENT` | 3 | การชำระเงิน (Payments) |
+| 1 | `MEMBER` | 4 | สมาชิก (M001–M004) |
+| 2 | `ROOM` | 5 | ห้องประชุม/พื้นที่ทำงาน (R101–R401) |
+| 3 | `EQUIPMENT` | 4 | อุปกรณ์เสริม (EQ01–EQ04) |
+| 4 | `BOOKING` | 3 | ใบจอง + ข้อมูลชำระเงิน |
+| 5 | `BOOKING_ROOM` | 4 | ห้องในแต่ละใบจอง (BK20260902 จอง 2 ห้อง) |
+| 6 | `BOOKING_EQUIPMENT` | 5 | อุปกรณ์ในแต่ละใบจอง |
 
-### Room Types | ประเภทห้อง
-
-| Type | Capacity | Price/Hour | Description |
-|---|---|---|---|
-| 🎨 Creative Pod | 2 persons | ฿120 | ห้องทำงานส่วนตัวขนาดเล็ก |
-| 🧠 Meeting Room | 6 persons | ฿250 | ห้องประชุมทีมงาน |
-| 👔 Boardroom | 14 persons | ฿500 | ห้องประชุมผู้บริหาร |
-| 🎪 Event Hall | 40 persons | ฿1,200 | ห้องจัดอีเวนท์ขนาดใหญ่ |
-
-### Equipment | อุปกรณ์เสริม
+| Room | Type | Capacity | Price/Hour | Floor |
+|---|---|---|---|---|
+| R101 Focus Pod A | Creative Pod | 2 | ฿120 | 1 |
+| R102 Focus Pod B | Creative Pod | 2 | ฿120 | 1 |
+| R201 Brainstorm Studio | Meeting Room | 6 | ฿250 | 2 |
+| R301 Executive Boardroom | Boardroom | 14 | ฿500 | 3 |
+| R401 Grand Innovation Hall | Event Hall | 40 | ฿1,200 | 4 |
 
 | Equipment | Price/Use | Stock |
 |---|---|---|
-| 📽️ 4K Laser Projector | ฿150 | 5 units |
-| 📋 Smart Interactive Whiteboard | ฿100 | 3 units |
-| 🎤 Wireless Microphone System | ฿120 | 4 units |
-| 📸 360° Hybrid Meeting Camera | ฿80 | 3 units |
+| EQ01 4K Laser Projector + จอโปรเจคเตอร์ | ฿150 | 5 |
+| EQ02 Smart Interactive Whiteboard | ฿100 | 3 |
+| EQ03 ชุดไมโครโฟนไร้สายและระบบเสียงประชุม | ฿120 | 4 |
+| EQ04 กล้อง 360 องศาสำหรับ Hybrid Meeting | ฿80 | 3 |
 
 ---
 
-## 🎓 Academic Information | ข้อมูลรายวิชา
+## 🎓 Academic Information
 
 | | Details |
 |---|---|
 | **Course** | CSC362-64 sec02 Database Systems |
-| **Instructor** | อ.สุมนา เกษมสวัสดิ์ (Aj. Sumana Kasemsawat) |
+| **Instructor** | อ.สุมนา เกษมสวัสดิ์ |
 | **Institution** | มหาวิทยาลัยรังสิต (Rangsit University) |
 | **Semester** | ภาคการศึกษาที่ 1/2569 |
-| **DBMS** | PostgreSQL (Relational Database Management System) |
+| **DBMS** | PostgreSQL |
 
----
+## 👨‍💻 Author
 
-## 👨‍💻 Author | ผู้พัฒนา
-
-<div align="center">
-
-**นายณพัชรกัณฑ์ พัชญ์ชัยพงศา**
-
-**Naphatcharakan Phatchaiphongsa**
-
-Student ID:
-
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Novterss)
-
-</div>
-
----
+**นายณพัชรกัณฑ์ พัชญ์ชัยพงศา** (Naphatcharakan Phatchaiphongsa) · [GitHub](https://github.com/Novterss)
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
-**Built with ❤️ for CSC362 Database Systems**
-
-*Rangsit University — Faculty of Information Technology*
-
-</div>
+MIT — see [LICENSE](LICENSE)
